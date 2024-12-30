@@ -1,5 +1,8 @@
 package com.fabianospdev.mindflow.core.helpers
 
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+
 class DefaultRetryController(private val maxRetries: Int = 3) : RetryController {
     private val _isRetryEnabled = MutableStateFlow(true)
     override val isRetryEnabled: StateFlow<Boolean> = _isRetryEnabled

@@ -13,15 +13,22 @@ class LoginRemoteRepositoryImpl @Inject constructor(
     override suspend fun login(email: String, password: String): Result<LoginResponseEntity> {
         return try {
             val requestModel = LoginRequestModel(email, password)
+            val result = remoteDataSource.login(requestModel)
 
-            val response = remoteDataSource.login(requestModel)
-            if (response.isSuccessful && response.body() != null) {
-                Result.success(response.body()!!)
+            if (result.isSuccess) {
+                val loginResponse = result.getOrNull()
+             // Directly returns the LoginResponseModel as LoginRemoteEntity since it implements LoginRemoteEntity
+                if (loginResponse != null) {
+                    Result.success(loginResponse)
+                } else {
+                    Result.failure(Throwable("Failed to map to LoginRemoteEntity"))
+                }
             } else {
-                Result.failure(Throwable("Login failed: ${response.errorBody()?.string()}"))
+                Result.failure(Throwable("Login failed: ${result.isFailure}"))
             }
         } catch (e: Exception) {
             Result.failure(Throwable("Authentication error: ${e.message}", e))
         }
     }
+
 }
