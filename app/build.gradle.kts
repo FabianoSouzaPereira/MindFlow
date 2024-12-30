@@ -1,7 +1,12 @@
+import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp") version "2.1.0-1.0.29"
+    id("com.google.dagger.hilt.android") version "2.51.1"
 }
 
 android {
@@ -30,11 +35,27 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
+        freeCompilerArgs += listOf("-Xlint:deprecation")
     }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.0"
+        kotlinOptions {
+            freeCompilerArgs += listOf("-Xlint:deprecation")
+        }
+    }
+
+    ksp {
+        arg("room.incremental", "true")
+    }
+
     buildFeatures {
         compose = true
+        viewBinding = true
     }
+    buildToolsVersion = "34.0.0"
 }
+
 
 dependencies {
 
@@ -46,7 +67,25 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    
+    // Hilt
+    implementation(libs.dagger.hilt)
+    ksp(libs.dagger.hilt.compiler)
+    ksp(libs.hilt.viewmodel.compiler)
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.hilt.common)
+    // Optional para Compose:
+    implementation(libs.hilt.navigation.compose)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter)
     testImplementation(libs.junit)
+
+    // Room
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

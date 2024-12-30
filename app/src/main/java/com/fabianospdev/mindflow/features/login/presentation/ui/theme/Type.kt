@@ -1,4 +1,4 @@
-package com.fabianospdev.mindflow.ui.theme
+package com.fabianospdev.mindflow.features.login.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
