@@ -70,6 +70,7 @@ dependencies {
     
     // Hilt
     implementation(libs.dagger.hilt)
+    implementation(libs.androidx.runtime.livedata)
     ksp(libs.dagger.hilt.compiler)
     ksp(libs.hilt.viewmodel.compiler)
     implementation(libs.hilt.navigation.compose)
