@@ -5,47 +5,45 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.fabianospdev.mindflow.features.home.presentation.ui.home.HomeScreen
+import com.fabianospdev.mindflow.features.login.presentation.ui.login.LoginScreen
 import com.fabianospdev.mindflow.features.login.presentation.ui.theme.MindFlowTheme
+import com.fabianospdev.mindflow.features.settings.presentation.ui.settings.SettingsScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private lateinit var navController: NavHostController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MindFlowTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+            val context = applicationContext
+            Surface(modifier = Modifier.fillMaxSize(), color = Color.Transparent, tonalElevation = 5.dp) {
+                MindFlowTheme {
+                    navController = rememberNavController()
+                    NavHost(navController = navController, startDestination = context.getString(R.string.login)) {
+                        composable(context.getString(R.string.login)) {
+                            LoginScreen(navController = navController, name = context.getString(R.string.login))
+                        }
+                        composable(context.getString(R.string.home)) {
+                            HomeScreen(navController = navController, name = context.getString(R.string.home))
+                        }
+                        composable(context.getString(R.string.settings)) {
+                            SettingsScreen(navController = navController, name = context.getString(R.string.settings))
+                        }
+                    }
                 }
             }
         }
-    }
-}
-
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MindFlowTheme {
-        Greeting("Android")
     }
 }
