@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.RetryController
 import com.fabianospdev.mindflow.features.login.domain.usecases.LoginRemoteUseCase
 import com.fabianospdev.mindflow.features.login.presentation.ui.login.LoginPresenterError
@@ -20,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val useCase: LoginRemoteUseCase,
-    private val retryController: RetryController
+    private val retryController: RetryController,
+    private val appConfig: AppConfig
 ) : ViewModel() {
 
     var username = mutableStateOf("")
@@ -33,6 +35,12 @@ class LoginViewModel @Inject constructor(
 
     private val _showRetryLimitReached = MutableStateFlow(false)
     val showRetryLimitReached: StateFlow<Boolean> get() = _showRetryLimitReached
+
+    val isUsingFirebase: StateFlow<Boolean> = appConfig.isUsingFirebase
+
+    fun toggleFirebaseUsage() {
+        appConfig.setUsingFirebase(!appConfig.isUsingFirebase.value)
+    }
 
     private val _state = MutableLiveData<LoginState>(LoginState.Idle)
     val state: LiveData<LoginState> get() = _state

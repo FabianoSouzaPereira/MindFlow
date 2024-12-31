@@ -1,19 +1,19 @@
 package com.fabianospdev.mindflow.features.login.data.repositories
 
-import com.fabianospdev.mindflow.features.login.data.datasources.LoginRemoteDataSource
+import com.fabianospdev.mindflow.features.login.data.datasources.LoginDataSource
 import com.fabianospdev.mindflow.features.login.data.models.LoginRequestModel
 import com.fabianospdev.mindflow.features.login.domain.entities.LoginResponseEntity
 import com.fabianospdev.mindflow.features.login.domain.repositories.LoginRemoteRepository
 import javax.inject.Inject
 
 class LoginRemoteRepositoryImpl @Inject constructor(
-    private val remoteDataSource: LoginRemoteDataSource
+    private val loginDataSource: LoginDataSource
 ) : LoginRemoteRepository {
 
     override suspend fun login(email: String, password: String): Result<LoginResponseEntity> {
         return try {
             val requestModel = LoginRequestModel(email, password)
-            val result = remoteDataSource.login(requestModel)
+            val result = loginDataSource.login(requestModel)
 
             if (result.isSuccess) {
                 val loginResponse = result.getOrNull()
