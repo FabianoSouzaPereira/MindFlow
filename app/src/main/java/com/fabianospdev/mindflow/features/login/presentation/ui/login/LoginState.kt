@@ -1,8 +1,6 @@
 package com.fabianospdev.mindflow.features.login.presentation.ui.login
 
-import com.fabianospdev.mindflow.features.login.data.models.LoginResponseModel
 import com.fabianospdev.mindflow.features.login.domain.entities.LoginResponseEntity
-import retrofit2.Response
 
 sealed class LoginState {
     object Loading : LoginState()
@@ -17,7 +15,7 @@ sealed class LoginState {
      * Success state: Represents a successful login response. Contains the result of the login attempt, which includes
      * the response from the server (usually a success status and user data).
      */
-    data class Success(val response: Result<LoginResponseEntity>) : LoginState()
+    data class Success(val response: LoginResponseEntity) : LoginState()
 
     /**
      * Error state: Represents a general error state that occurs if the login attempt fails. The error message can

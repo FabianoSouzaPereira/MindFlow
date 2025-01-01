@@ -8,7 +8,7 @@ import javax.inject.Inject
 class SettingsFirebaseDataSource  @Inject constructor(
     private val firebaseAuth: FirebaseAuth
 ) : SettingsDataSource {
-    override suspend fun getSettings(request: SettingsRequestModel): Result<SettingsResponseModel> {
+    override suspend fun getSettings(request: SettingsRequestModel): SettingsResponseModel {
         TODO("Not yet implemented")
     }
 }

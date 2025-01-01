@@ -5,5 +5,5 @@ import com.fabianospdev.mindflow.features.settings.data.models.SettingsResponseM
 
 
 interface SettingsDataSource {
-    suspend fun getSettings(request: SettingsRequestModel): Result<SettingsResponseModel>
+    suspend fun getSettings(request: SettingsRequestModel): SettingsResponseModel
 }

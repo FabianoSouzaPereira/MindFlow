@@ -4,7 +4,7 @@ import com.fabianospdev.mindflow.features.settings.domain.entities.SettingsRespo
 import com.fabianospdev.mindflow.features.settings.domain.repositories.SettingsRemoteRepository
 
 class SettingsRemoteUseCaseImpl(private val settingsRemoteRepository: SettingsRemoteRepository) : SettingsRemoteUseCase{
-    override suspend fun getSettings(): Result<SettingsResponseEntity> {
+    override suspend fun getSettings(): SettingsResponseEntity {
         TODO("Not yet implemented")
     }
 }

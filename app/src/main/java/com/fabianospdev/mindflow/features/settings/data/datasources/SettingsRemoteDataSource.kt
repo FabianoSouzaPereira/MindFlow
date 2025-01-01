@@ -5,9 +5,9 @@ import com.fabianospdev.mindflow.features.settings.data.models.SettingsResponseM
 import javax.inject.Inject
 
 class SettingsRemoteDataSource @Inject constructor(
-    private val settingsDataSource: SettingsDataSource
+
 ) : SettingsDataSource {
-    override suspend fun getSettings(request: SettingsRequestModel): Result<SettingsResponseModel> {
+    override suspend fun getSettings(request: SettingsRequestModel): SettingsResponseModel {
         TODO("Not yet implemented")
     }
 }

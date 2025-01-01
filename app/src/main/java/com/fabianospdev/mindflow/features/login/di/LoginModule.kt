@@ -1,17 +1,20 @@
 package com.fabianospdev.mindflow.features.login.di
 
 import com.fabianospdev.mindflow.core.helpers.AppConfig
-import com.fabianospdev.mindflow.core.helpers.RetryController
+import com.fabianospdev.mindflow.features.login.data.datasources.LoginDataSource
+import com.fabianospdev.mindflow.features.login.data.datasources.LoginFirebaseDataSource
 import com.fabianospdev.mindflow.features.login.data.datasources.LoginRemoteDataSource
 import com.fabianospdev.mindflow.features.login.data.repositories.LoginRemoteRepositoryImpl
 import com.fabianospdev.mindflow.features.login.domain.repositories.LoginRemoteRepository
 import com.fabianospdev.mindflow.features.login.domain.usecases.LoginRemoteUseCase
 import com.fabianospdev.mindflow.features.login.domain.usecases.LoginRemoteUseCaseImpl
-import com.fabianospdev.mindflow.features.login.presentation.viewmodel.LoginViewModel
+import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import retrofit2.Retrofit
+import javax.inject.Singleton
 
 
 @Module
@@ -19,10 +22,20 @@ import dagger.hilt.components.SingletonComponent
 object LoginModule {
 
     @Provides
+    @Singleton
+    fun provideLoginDataSource(
+        appConfig: AppConfig,
+        retrofitDataSource: LoginRemoteDataSource,
+        firebaseDataSource: LoginFirebaseDataSource
+    ): LoginDataSource {
+        return if (appConfig.isUsingFirebase.value) firebaseDataSource else retrofitDataSource
+    }
+
+    @Provides
     fun provideLoginRepository(
-        remoteDataSource: LoginRemoteDataSource
+        dataSource: LoginDataSource
     ): LoginRemoteRepository {
-        return LoginRemoteRepositoryImpl(remoteDataSource)
+        return LoginRemoteRepositoryImpl(dataSource)
     }
 
     @Provides
@@ -33,11 +46,16 @@ object LoginModule {
     }
 
     @Provides
-    fun providerLoginViewModel(
-        loginRemoteUsecase: LoginRemoteUseCase,
-        retryController: RetryController,
-        appConfig: AppConfig
-    ) : LoginViewModel {
-        return LoginViewModel(useCase = loginRemoteUsecase, retryController = retryController, appConfig = appConfig)
+    @Singleton
+    fun provideLoginRemoteDataSource(retrofit: Retrofit): LoginRemoteDataSource {
+        val loginDataSource  = retrofit.create(LoginDataSource ::class.java)
+        return LoginRemoteDataSource(loginDataSource)
     }
+
+    @Provides
+    @Singleton
+    fun provideLoginFirebaseDataSource(firebaseAuth: FirebaseAuth): LoginFirebaseDataSource {
+        return LoginFirebaseDataSource(firebaseAuth)
+    }
+
 }

@@ -27,11 +27,7 @@ object SettingsModule {
         retrofitDataSource: SettingsRemoteDataSource,
         firebaseDataSource: SettingsFirebaseDataSource
     ): SettingsDataSource {
-        return if (appConfig.isUsingFirebase) {
-            firebaseDataSource
-        } else {
-            retrofitDataSource
-        }
+        return if (appConfig.isUsingFirebase.value) firebaseDataSource else retrofitDataSource
     }
 
     @Provides
@@ -49,7 +45,7 @@ object SettingsModule {
     }
 
     @Provides
-    fun providerHomeViewModel(
+    fun providerSettingsViewModel(
         settingsRemoteUseCase: SettingsRemoteUseCase,
         retryController: RetryController,
         appConfig: AppConfig

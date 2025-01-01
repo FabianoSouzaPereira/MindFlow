@@ -10,13 +10,13 @@ class LoginFirebaseDataSource @Inject constructor(
     private val firebaseAuth: FirebaseAuth
 ) : LoginDataSource {
 
-    override suspend fun login(request: LoginRequestModel): Result<LoginResponseModel> {
+    override suspend fun login(request: LoginRequestModel): LoginResponseModel {
         return try {
             val result = firebaseAuth.signInWithEmailAndPassword(request.email, request.password).await()
             val loginResponse = LoginResponseModel(result.user?.uid ?: "")
-            Result.success(loginResponse)
+            loginResponse
         } catch (e: Exception) {
-            Result.failure(Throwable("Authentication error: ${e.message}", e))
+            throw Throwable("Authentication error: ${e.message}", e)
         }
     }
 }

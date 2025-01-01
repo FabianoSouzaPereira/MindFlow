@@ -7,7 +7,7 @@ import javax.inject.Inject
 class HomeRemoteDataSource @Inject constructor(
     private val retrofitService: HomeDataSource
 ) : HomeDataSource {
-    override suspend fun getHomeContent(request: HomeRequestModel): Result<HomeResponseModel> {
-        TODO("Not yet implemented")
+    override suspend fun getHomeContent(request: HomeRequestModel): HomeResponseModel {
+        return retrofitService.getHomeContent(request)
     }
 }

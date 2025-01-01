@@ -8,7 +8,7 @@ import javax.inject.Inject
 class SettingsRemoteRepositoryImpl @Inject constructor(
     private val  settingsDataSource: SettingsDataSource
 ) : SettingsRemoteRepository{
-    override suspend fun getSettings(): Result<SettingsResponseEntity> {
+    override suspend fun getSettings(): SettingsResponseEntity {
         TODO("Not yet implemented")
     }
 }

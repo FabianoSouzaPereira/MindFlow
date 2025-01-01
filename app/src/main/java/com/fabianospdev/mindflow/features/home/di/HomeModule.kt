@@ -1,5 +1,6 @@
 package com.fabianospdev.mindflow.features.home.di
 
+import com.fabianospdev.mindflow.core.di.CoreModule
 import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.RetryController
 import com.fabianospdev.mindflow.features.home.data.datasources.HomeDataSource
@@ -10,10 +11,12 @@ import com.fabianospdev.mindflow.features.home.domain.repositories.HomeRemoteRep
 import com.fabianospdev.mindflow.features.home.domain.usecases.HomeRemoteUseCase
 import com.fabianospdev.mindflow.features.home.domain.usecases.HomeRemoteUseCaseImpl
 import com.fabianospdev.mindflow.features.home.presentation.viewmodel.HomeViewModel
+import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import retrofit2.Retrofit
 import javax.inject.Singleton
 
 @Module
@@ -27,11 +30,7 @@ object HomeModule {
         retrofitDataSource: HomeRemoteDataSource,
         firebaseDataSource: HomeFirebaseDataSource
     ): HomeDataSource {
-        return if (appConfig.isUsingFirebase) {
-            firebaseDataSource
-        } else {
-            retrofitDataSource
-        }
+        return if (appConfig.isUsingFirebase.value) firebaseDataSource else retrofitDataSource
     }
 
     @Provides
@@ -53,7 +52,21 @@ object HomeModule {
         homeRemoteUseCase: HomeRemoteUseCase,
         retryController: RetryController,
         appConfig: AppConfig
-    ) : HomeViewModel {
+    ): HomeViewModel {
         return HomeViewModel(useCase = homeRemoteUseCase, retryController = retryController, appConfig = appConfig)
+    }
+
+    @Provides
+    @Singleton
+    fun provideHomeRemoteDataSource(retrofit: Retrofit): HomeRemoteDataSource {
+        val homeDataSource = retrofit.create(HomeDataSource::class.java)
+        return HomeRemoteDataSource(homeDataSource)
+    }
+
+    @Provides
+    @Singleton
+    @CoreModule.FirebaseSource
+    fun provideHomeFirebaseDataSource(firebaseAuth: FirebaseAuth): HomeFirebaseDataSource {
+        return HomeFirebaseDataSource(firebaseAuth)
     }
 }

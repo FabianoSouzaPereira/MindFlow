@@ -6,9 +6,9 @@ import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
 
 class HomeFirebaseDataSource @Inject constructor(
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth?
 ) : HomeDataSource {
-    override suspend fun getHomeContent(request: HomeRequestModel): Result<HomeResponseModel> {
+    override suspend fun getHomeContent(request: HomeRequestModel): HomeResponseModel {
         TODO("Not yet implemented")
     }
 }

@@ -8,16 +8,17 @@ class LoginRemoteDataSource @Inject constructor(
     private val retrofitService: LoginDataSource
 ) : LoginDataSource {
 
-    override suspend fun login(request: LoginRequestModel): Result<LoginResponseModel> {
-        return try {
-            val result = retrofitService.login(request)
-            if (result.isSuccess) {
-                result
+    override suspend fun login(request: LoginRequestModel): LoginResponseModel {
+        try {
+            val response = retrofitService.login(request)
+
+            if (response.token.isNotEmpty()) {
+                return response
             } else {
-                Result.failure(Throwable("Login failed: ${result}"))
+                throw Throwable("Login failed: Token is empty")
             }
         } catch (e: Exception) {
-            Result.failure(Throwable("Authentication error: ${e.message}", e))
+            throw Throwable("Authentication error: ${e.message}", e)
         }
     }
 }
