@@ -2,17 +2,18 @@ package com.fabianospdev.mindflow.features.login.data.datasources
 
 import com.fabianospdev.mindflow.features.login.data.models.LoginRequestModel
 import com.fabianospdev.mindflow.features.login.data.models.LoginResponseModel
+import retrofit2.Response
 import javax.inject.Inject
 
 class LoginRemoteDataSource @Inject constructor(
     private val retrofitService: LoginDataSource
 ) : LoginDataSource {
 
-    override suspend fun login(request: LoginRequestModel): LoginResponseModel {
+    override suspend fun login(request: LoginRequestModel): Response<LoginResponseModel> {
         try {
             val response = retrofitService.login(request)
 
-            if (response.token.isNotEmpty()) {
+            if (response.isSuccessful) {
                 return response
             } else {
                 throw Throwable("Login failed: Token is empty")

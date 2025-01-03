@@ -49,6 +49,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -153,9 +154,17 @@ fun LoginScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ){
                         Image(
-                            painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+                            painter = painterResource(id = R.drawable.logo),
                             contentDescription = "logo",
-                            modifier = Modifier.size(200.dp)
+                            modifier = Modifier
+                                .size(300.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .border(
+                                    width = 2.dp,
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    shape = RoundedCornerShape(16.dp)
+                                ),
+                            contentScale = ContentScale.Crop
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(

@@ -1,6 +1,3 @@
-import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -42,7 +39,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.0"
         kotlinOptions {
-            freeCompilerArgs += listOf("-Xlint:deprecation")
+          //  freeCompilerArgs += listOf("-Xlint:deprecation")
         }
     }
 

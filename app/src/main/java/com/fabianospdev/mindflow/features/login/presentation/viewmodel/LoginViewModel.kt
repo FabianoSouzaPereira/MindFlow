@@ -57,10 +57,14 @@ class LoginViewModel @Inject constructor(
             try {
                 delay(2000) //todo remove it
 
-                val response = useCase.login(username, password)
-                if (response.token.isNotEmpty()) {
-                    _state.value = LoginState.Success(response)
-                    retryController.resetRetryCount()
+                val result = useCase.login(username, password)
+                if (result.isSuccess) {
+                    result.getOrNull()?.let { loginEntity ->
+                        _state.value = LoginState.Success(loginEntity)
+                        retryController.resetRetryCount()
+                    } ?: run {
+                        _state.value = LoginState.Error("Resposta nula")
+                    }
                 } else {
                     retryController.incrementRetryCount()
                     _state.value = LoginState.Error(LoginPresenterError.LoginFailed.message)

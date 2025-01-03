@@ -7,7 +7,7 @@ import javax.inject.Inject
 class LoginRemoteUseCaseImpl @Inject constructor(
     private val repository: LoginRemoteRepository
 ) : LoginRemoteUseCase {
-    override suspend fun login(email: String, password: String): LoginResponseEntity {
+    override suspend fun login(email: String, password: String): Result<LoginResponseEntity> {
         return repository.login(email, password)
     }
 }
