@@ -73,6 +73,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.fabianospdev.mindflow.R
 import com.fabianospdev.mindflow.core.utils.LoadFontsFamily
+import com.fabianospdev.mindflow.features.login.presentation.ui.login.states.LoginState
 import com.fabianospdev.mindflow.features.login.presentation.viewmodel.LoginViewModel
 import kotlinx.coroutines.delay
 
@@ -82,7 +83,7 @@ fun LoginScreen(
     navController: NavHostController,
     name: String
 ) {
-    val state by viewModel.state.observeAsState(LoginState.Idle)
+    val state by viewModel.state.observeAsState(LoginState.LoginIdle)
     val context = LocalContext.current
 
     /** Observing the ViewModel state **/
@@ -125,7 +126,7 @@ fun LoginScreen(
     }
 
     when (state) {
-        is LoginState.Loading -> {
+        is LoginState.LoginLoading -> {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -135,7 +136,7 @@ fun LoginScreen(
                 CircularProgressIndicator()
             }
         }
-        is LoginState.Idle -> {
+        is LoginState.LoginIdle -> {
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.onSurface,
@@ -329,13 +330,71 @@ fun LoginScreen(
                 }
             }
         }
-        is LoginState.Success -> {}
-        is LoginState.Error -> {}
-        is LoginState.NoConnection -> {}
-        is LoginState.TimeoutError -> {}
-        is LoginState.Unauthorized -> {}
-        is LoginState.ValidationError -> {}
+        is LoginState.LoginSuccess -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Success")
+                navController.navigate("Home")
+            }
+        }
+        is LoginState.LoginError -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("ERROR")
+            }
+        }
+        is LoginState.LoginNoConnection -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("LoginNoConnection")
+            }
+        }
+        is LoginState.LoginTimeoutError -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("LoginTimeoutError")
+            }
+        }
+        is LoginState.LoginUnauthorized -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("LoginUnauthorized")
+            }
+        }
+        is LoginState.LoginValidationError -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("LoginValidationError")
+            }
+        }
 
+        else -> {
+            LoginState.LoginUnknown("Error State Unknown")
+        }
     }
 }
 

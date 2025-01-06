@@ -10,7 +10,7 @@ import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.RetryController
 import com.fabianospdev.mindflow.features.login.domain.usecases.LoginRemoteUseCase
 import com.fabianospdev.mindflow.features.login.presentation.ui.login.LoginPresenterError
-import com.fabianospdev.mindflow.features.login.presentation.ui.login.LoginState
+import com.fabianospdev.mindflow.features.login.presentation.ui.login.states.LoginState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,7 +42,7 @@ class LoginViewModel @Inject constructor(
         appConfig.setUsingFirebase(!appConfig.isUsingFirebase.value)
     }
 
-    private val _state = MutableLiveData<LoginState>(LoginState.Idle)
+    private val _state = MutableLiveData<LoginState>(LoginState.LoginIdle)
     val state: LiveData<LoginState> get() = _state
 
 
@@ -51,7 +51,7 @@ class LoginViewModel @Inject constructor(
             _showRetryLimitReached.value = true
             return
         }
-        _state.value = LoginState.Loading
+        _state.value = LoginState.LoginLoading
 
         viewModelScope.launch {
             try {
@@ -60,32 +60,32 @@ class LoginViewModel @Inject constructor(
                 val result = useCase.login(username, password)
                 if (result.isSuccess) {
                     result.getOrNull()?.let { loginEntity ->
-                        _state.value = LoginState.Success(loginEntity)
+                        _state.value = LoginState.LoginSuccess(loginEntity)
                         retryController.resetRetryCount()
                     } ?: run {
-                        _state.value = LoginState.Error("Resposta nula")
+                        _state.value = LoginState.LoginError("Resposta nula")
                     }
                 } else {
                     retryController.incrementRetryCount()
-                    _state.value = LoginState.Error(LoginPresenterError.LoginFailed.message)
+                    _state.value = LoginState.LoginError(LoginPresenterError.LoginFailed.message)
                 }
 
             } catch (e: Exception){
                 retryController.incrementRetryCount()
                 _state.value = when (e){
-                    is com.fabianospdev.mindflow.features.login.domain.exceptions.UserNotFoundException -> LoginState.Error(
+                    is com.fabianospdev.mindflow.features.login.domain.exceptions.UserNotFoundException -> LoginState.LoginError(
                         LoginPresenterError.UserNotFound.message
                     )
-                    is com.fabianospdev.mindflow.features.login.domain.exceptions.TimeoutException -> LoginState.TimeoutError(
+                    is com.fabianospdev.mindflow.features.login.domain.exceptions.TimeoutException -> LoginState.LoginTimeoutError(
                         LoginPresenterError.TimeoutError.message
                     )
-                    is com.fabianospdev.mindflow.features.login.domain.exceptions.UnauthorizedException -> LoginState.Unauthorized(
+                    is com.fabianospdev.mindflow.features.login.domain.exceptions.UnauthorizedException -> LoginState.LoginUnauthorized(
                         LoginPresenterError.Unauthorized.message
                     )
-                    is com.fabianospdev.mindflow.features.login.domain.exceptions.ValidationException -> LoginState.ValidationError(
+                    is com.fabianospdev.mindflow.features.login.domain.exceptions.ValidationException -> LoginState.LoginValidationError(
                         LoginPresenterError.ValidationError.message
                     )
-                    else -> LoginState.Error(LoginPresenterError.LoginFailed.message)
+                    else -> LoginState.LoginError(LoginPresenterError.LoginFailed.message)
                 }
             }
         }
@@ -97,7 +97,7 @@ class LoginViewModel @Inject constructor(
     }
 
     fun resetState() {
-        _state.value = LoginState.Idle
+        _state.value = LoginState.LoginIdle
     }
 
     fun clearInputFields() {

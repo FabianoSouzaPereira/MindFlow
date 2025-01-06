@@ -1,5 +1,6 @@
 package com.fabianospdev.mindflow.core.di
 
+import android.content.Context
 import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.DefaultRetryController
 import com.fabianospdev.mindflow.core.helpers.RetryController
@@ -7,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -43,8 +45,10 @@ object CoreModule {
 
     @Provides
     @Singleton
-    fun provideAppConfig(): AppConfig {
-        return AppConfig(initialState = false)
+    fun provideAppConfig(@ApplicationContext context: Context): AppConfig {
+        val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val isUsingFirebase = sharedPreferences.getBoolean("is_using_firebase", true)
+        return AppConfig(initialState = isUsingFirebase, context = context)
     }
 
     @Provides
