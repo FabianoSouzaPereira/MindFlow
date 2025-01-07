@@ -1,0 +1,40 @@
+package com.fabianospdev.mindflow
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavHostController
+import com.fabianospdev.mindflow.core.helpers.TokenManager
+import kotlinx.coroutines.delay
+
+@Composable
+fun SplashScreen(navController: NavHostController, name: String) {
+    val context = LocalContext.current
+    val token = TokenManager.getToken(context)
+
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        // Usando LaunchedEffect para manejar o delay e navegação
+        LaunchedEffect(Unit) {
+            delay(2000)
+
+            if (!token.isNullOrEmpty()) {
+                navController.navigate("home") {
+                    popUpTo("home") { inclusive = true }
+                }
+            } else {
+                navController.navigate("login") {
+                    popUpTo("login") { inclusive = true }
+                }
+            }
+        }
+    }
+}

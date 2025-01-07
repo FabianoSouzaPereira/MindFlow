@@ -1,5 +1,6 @@
 package com.fabianospdev.mindflow.features.login.di
 
+import android.content.Context
 import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.features.login.data.datasources.LoginDataSource
 import com.fabianospdev.mindflow.features.login.data.datasources.LoginFirebaseDataSource
@@ -12,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import javax.inject.Singleton
@@ -33,9 +35,10 @@ object LoginModule {
 
     @Provides
     fun provideLoginRepository(
-        dataSource: LoginDataSource
+        dataSource: LoginDataSource,
+        @ApplicationContext context: Context
     ): LoginRemoteRepository {
-        return LoginRemoteRepositoryImpl(dataSource)
+        return LoginRemoteRepositoryImpl(dataSource, context)
     }
 
     @Provides

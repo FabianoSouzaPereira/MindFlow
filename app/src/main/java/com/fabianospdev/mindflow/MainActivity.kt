@@ -31,7 +31,10 @@ class MainActivity : ComponentActivity() {
             Surface(modifier = Modifier.fillMaxSize(), color = Color.Transparent, tonalElevation = 5.dp) {
                 MindFlowTheme {
                     navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = context.getString(R.string.login)) {
+                    NavHost(navController = navController, startDestination = context.getString(R.string.splash)) {
+                        composable(getString(R.string.splash)) {
+                            SplashScreen(navController = navController, name = getString(R.string.splash))
+                        }
                         composable(context.getString(R.string.login)) {
                             LoginScreen(navController = navController, name = context.getString(R.string.login))
                         }
