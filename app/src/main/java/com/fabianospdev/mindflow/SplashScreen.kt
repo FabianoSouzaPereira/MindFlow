@@ -27,12 +27,12 @@ fun SplashScreen(navController: NavHostController, name: String) {
             delay(2000)
 
             if (!token.isNullOrEmpty()) {
-                navController.navigate("home") {
-                    popUpTo("home") { inclusive = true }
+                navController.navigate(context.getString(R.string.home)) {
+                    popUpTo(context.getString(R.string.home)) { inclusive = true }
                 }
             } else {
-                navController.navigate("login") {
-                    popUpTo("login") { inclusive = true }
+                navController.navigate(context.getString(R.string.login)) {
+                    popUpTo(context.getString(R.string.login)) { inclusive = true }
                 }
             }
         }

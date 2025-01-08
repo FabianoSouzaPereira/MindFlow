@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
                     navController = rememberNavController()
                     NavHost(navController = navController, startDestination = context.getString(R.string.splash)) {
                         composable(getString(R.string.splash)) {
-                            SplashScreen(navController = navController, name = getString(R.string.splash))
+                            SplashScreen(navController = navController, name = context.getString(R.string.splash))
                         }
                         composable(context.getString(R.string.login)) {
                             LoginScreen(navController = navController, name = context.getString(R.string.login))
