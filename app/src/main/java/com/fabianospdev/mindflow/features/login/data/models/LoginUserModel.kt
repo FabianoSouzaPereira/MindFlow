@@ -1,8 +1,8 @@
 package com.fabianospdev.mindflow.features.login.data.models
 
-import com.fabianospdev.mindflow.features.login.domain.entities.UserEntity
+import com.fabianospdev.mindflow.features.login.domain.entities.LoginUserEntity
 import com.google.gson.annotations.SerializedName
 
-data class UserModel(
+data class LoginUserModel(
     @SerializedName("name") override val name: String
-): UserEntity
+): LoginUserEntity

@@ -5,6 +5,6 @@ import com.fabianospdev.mindflow.features.home.domain.repositories.HomeRemoteRep
 
 class HomeRemoteUseCaseImpl(private val repository: HomeRemoteRepository) : HomeRemoteUseCase {
     override suspend fun getHomeContent(): Result<HomeResponseEntity> {
-        TODO("Not yet implemented")
+        return repository.getHomeContent()
     }
 }

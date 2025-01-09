@@ -8,8 +8,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.RetryController
+import com.fabianospdev.mindflow.core.helpers.exceptions.CommonError
+import com.fabianospdev.mindflow.core.helpers.exceptions.TimeoutException
+import com.fabianospdev.mindflow.core.helpers.exceptions.UnauthorizedException
+import com.fabianospdev.mindflow.core.helpers.exceptions.UserNotFoundException
+import com.fabianospdev.mindflow.core.helpers.exceptions.ValidationException
 import com.fabianospdev.mindflow.features.login.domain.usecases.LoginRemoteUseCase
-import com.fabianospdev.mindflow.features.login.presentation.ui.login.LoginPresenterError
+import com.fabianospdev.mindflow.features.login.presentation.ui.login.LoginError
 import com.fabianospdev.mindflow.features.login.presentation.ui.login.states.LoginState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -67,25 +72,25 @@ class LoginViewModel @Inject constructor(
                     }
                 } else {
                     retryController.incrementRetryCount()
-                    _state.value = LoginState.LoginError(LoginPresenterError.LoginFailed.message)
+                    _state.value = LoginState.LoginError(LoginError.LoginFailed.message)
                 }
 
             } catch (e: Exception){
                 retryController.incrementRetryCount()
                 _state.value = when (e){
-                    is com.fabianospdev.mindflow.features.login.domain.exceptions.UserNotFoundException -> LoginState.LoginError(
-                        LoginPresenterError.UserNotFound.message
+                    is UserNotFoundException -> LoginState.LoginError(
+                        LoginError.UserNotFound.message
                     )
-                    is com.fabianospdev.mindflow.features.login.domain.exceptions.TimeoutException -> LoginState.LoginTimeoutError(
-                        LoginPresenterError.TimeoutError.message
+                    is TimeoutException -> LoginState.LoginTimeoutError(
+                        CommonError.TimeoutError.message
                     )
-                    is com.fabianospdev.mindflow.features.login.domain.exceptions.UnauthorizedException -> LoginState.LoginUnauthorized(
-                        LoginPresenterError.Unauthorized.message
+                    is UnauthorizedException -> LoginState.LoginUnauthorized(
+                        CommonError.Unauthorized.message
                     )
-                    is com.fabianospdev.mindflow.features.login.domain.exceptions.ValidationException -> LoginState.LoginValidationError(
-                        LoginPresenterError.ValidationError.message
+                    is ValidationException -> LoginState.LoginValidationError(
+                        CommonError.ValidationError.message
                     )
-                    else -> LoginState.LoginError(LoginPresenterError.LoginFailed.message)
+                    else -> LoginState.LoginError(LoginError.LoginFailed.message)
                 }
             }
         }

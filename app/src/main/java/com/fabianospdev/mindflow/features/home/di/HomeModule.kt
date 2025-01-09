@@ -1,5 +1,6 @@
 package com.fabianospdev.mindflow.features.home.di
 
+import android.content.Context
 import com.fabianospdev.mindflow.core.di.CoreModule
 import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.RetryController
@@ -15,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import javax.inject.Singleton
@@ -35,9 +37,10 @@ object HomeModule {
 
     @Provides
     fun provideHomeRepository(
-        remoteDataSource: HomeDataSource
+        remoteDataSource: HomeDataSource,
+        @ApplicationContext context: Context
     ): HomeRemoteRepository {
-        return HomeRemoteRepositoryImpl(remoteDataSource)
+        return HomeRemoteRepositoryImpl(remoteDataSource, context)
     }
 
     @Provides

@@ -1,5 +1,5 @@
 package com.fabianospdev.mindflow.features.login.domain.entities
 
-interface UserEntity {
+interface LoginUserEntity {
     val name: String
 }

@@ -72,6 +72,7 @@ import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.fabianospdev.mindflow.R
+import com.fabianospdev.mindflow.core.helpers.exceptions.CommonError
 import com.fabianospdev.mindflow.core.utils.LoadFontsFamily
 import com.fabianospdev.mindflow.features.login.presentation.ui.login.states.LoginState
 import com.fabianospdev.mindflow.features.login.presentation.viewmodel.LoginViewModel
@@ -342,13 +343,18 @@ fun LoginScreen(
             }
         }
         is LoginState.LoginError -> {
+            val errorMessage = when ((state as LoginState.LoginError).error) {
+                LoginError.UserNotFound.toString() -> LoginError.UserNotFound.message
+                LoginError.LoginFailed.toString() -> LoginError.LoginFailed.message
+                else -> CommonError.UnknownError.message
+            }
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.White),
                 contentAlignment = Alignment.Center
             ) {
-                Text("ERROR")
+                Text("ERROR: $errorMessage")
             }
         }
         is LoginState.LoginNoConnection -> {
@@ -393,7 +399,7 @@ fun LoginScreen(
         }
 
         else -> {
-            LoginState.LoginUnknown("Error State Unknown")
+            CommonError.UnknownError.message
         }
     }
 }

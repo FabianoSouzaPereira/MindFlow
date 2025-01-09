@@ -1,4 +1,4 @@
-package com.fabianospdev.mindflow.features.login.domain.exceptions
+package com.fabianospdev.mindflow.core.helpers.exceptions
 
 /**
  * Base exception for all request errors.

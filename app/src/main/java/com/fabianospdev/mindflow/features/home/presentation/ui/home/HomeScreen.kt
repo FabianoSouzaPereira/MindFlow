@@ -23,6 +23,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -33,11 +34,13 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.fabianospdev.mindflow.R
+import com.fabianospdev.mindflow.core.helpers.exceptions.CommonError
 import com.fabianospdev.mindflow.features.home.presentation.ui.home.components.Drawer
 import com.fabianospdev.mindflow.features.home.presentation.ui.home.components.FeatureCard
 import com.fabianospdev.mindflow.features.home.presentation.ui.home.components.HomeCenterAlignedTopAppBar
 import com.fabianospdev.mindflow.features.home.presentation.ui.home.states.HomeState
 import com.fabianospdev.mindflow.features.home.presentation.viewmodel.HomeViewModel
+import com.fabianospdev.mindflow.shared.ui.components.ShowRetryButton
 import kotlinx.coroutines.launch
 
 
@@ -50,6 +53,12 @@ fun HomeScreen(
 
     val state by viewModel.state.observeAsState(HomeState.HomeIdle)
     val context = LocalContext.current
+    val gradient = Brush.linearGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.primary,
+            MaterialTheme.colorScheme.secondary
+        )
+    )
 
     val view = LocalView.current
     val insets = WindowInsetsCompat.toWindowInsetsCompat(view.rootWindowInsets)
@@ -151,14 +160,28 @@ fun HomeScreen(
                 }
 
                 is HomeState.HomeError -> {
+                    val errorMessage = when ((state as HomeState.HomeError).error) {
+                        HomeError.DataLoadFailed.toString() -> HomeError.DataLoadFailed.message
+                        HomeError.SectionNotAvailable.toString() -> HomeError.SectionNotAvailable.message
+                        else -> CommonError.UnknownError.message
+                    }
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .background(Color.White),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("HomeError")
+                        Text("HomeError: $errorMessage")
                     }
+
+                    ShowRetryButton(
+                        viewModel = viewModel,
+                        errorMessage = errorMessage,
+                        gradient = gradient,
+                        onRetry = {
+                            viewModel.getHome()
+                        }
+                    )
                 }
 
                 is HomeState.HomeNoConnection -> {
