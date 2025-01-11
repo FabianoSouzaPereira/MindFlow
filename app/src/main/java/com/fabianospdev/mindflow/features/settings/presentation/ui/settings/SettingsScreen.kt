@@ -20,11 +20,11 @@ import com.fabianospdev.mindflow.features.settings.presentation.viewmodel.Settin
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
-    navController: NavHostController,
-    name: String
+    navController: NavHostController
 ) {
     val state by viewModel.state.observeAsState(SettingsState.SettingsIdle)
     val context = LocalContext.current
+
 
     when (state) {
         is SettingsState.SettingsLoading -> {
@@ -109,6 +109,14 @@ fun SettingsScreen(
         }
         else -> {
             SettingsState.SettingsUnknown("Error State Unknown")
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Error State Unknown")
+            }
         }
     }
 }

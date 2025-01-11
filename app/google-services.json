@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1081401672713",
+    "project_id": "mindflow-25be3",
+    "storage_bucket": "mindflow-25be3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1081401672713:android:d2336b4afaa8bef931a4d8",
+        "android_client_info": {
+          "package_name": "com.fabianospdev.mindflow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCo3ohTahbEfIRWnMUoDCdA7Dsfw_JSW-Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

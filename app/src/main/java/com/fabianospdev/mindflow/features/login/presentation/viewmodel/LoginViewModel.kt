@@ -17,7 +17,6 @@ import com.fabianospdev.mindflow.features.login.domain.usecases.LoginRemoteUseCa
 import com.fabianospdev.mindflow.features.login.presentation.ui.login.LoginError
 import com.fabianospdev.mindflow.features.login.presentation.ui.login.states.LoginState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -60,8 +59,6 @@ class LoginViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                delay(2000) //todo remove it
-
                 val result = useCase.login(username, password)
                 if (result.isSuccess) {
                     result.getOrNull()?.let { loginEntity ->

@@ -73,6 +73,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.fabianospdev.mindflow.R
 import com.fabianospdev.mindflow.core.helpers.exceptions.CommonError
+import com.fabianospdev.mindflow.core.routes.navigateToHome
 import com.fabianospdev.mindflow.core.utils.LoadFontsFamily
 import com.fabianospdev.mindflow.features.login.presentation.ui.login.states.LoginState
 import com.fabianospdev.mindflow.features.login.presentation.viewmodel.LoginViewModel
@@ -81,8 +82,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
-    navController: NavHostController,
-    name: String
+    navController: NavHostController
 ) {
     val state by viewModel.state.observeAsState(LoginState.LoginIdle)
     val context = LocalContext.current
@@ -339,7 +339,7 @@ fun LoginScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text("Success")
-                navController.navigate("Home")
+                navigateToHome(navController = navController)
             }
         }
         is LoginState.LoginError -> {

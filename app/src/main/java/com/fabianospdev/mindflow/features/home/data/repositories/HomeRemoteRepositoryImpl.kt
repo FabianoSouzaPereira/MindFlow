@@ -18,5 +18,4 @@ class HomeRemoteRepositoryImpl(
             Result.failure(e)
         }
     }
-
 }

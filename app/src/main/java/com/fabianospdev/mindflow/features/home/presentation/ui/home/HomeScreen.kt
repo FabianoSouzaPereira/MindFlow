@@ -47,8 +47,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
-    navController: NavHostController,
-    name: String
+    navController: NavHostController
 ) {
 
     val state by viewModel.state.observeAsState(HomeState.HomeIdle)
@@ -68,6 +67,7 @@ fun HomeScreen(
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -117,7 +117,7 @@ fun HomeScreen(
                                 )
                         ) {
                             Text(
-                                text = "Bem-vindo(a), $name",
+                                text = "Bem-vindo(a) ao MindFlow",
                                 style = MaterialTheme.typography.labelSmall
                             )
                             Spacer(modifier = Modifier.height(16.dp))

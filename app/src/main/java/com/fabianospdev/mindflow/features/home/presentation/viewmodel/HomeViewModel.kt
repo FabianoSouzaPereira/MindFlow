@@ -50,8 +50,8 @@ class HomeViewModel @Inject constructor(
 
                 val result = useCase.getHomeContent()
                 if (result.isSuccess) {
-                    result.getOrNull()?.let { HomeEntity ->
-                        _state.value = HomeState.HomeSuccess(HomeEntity)
+                    result.getOrNull()?.let { entity ->
+                        _state.value = HomeState.HomeSuccess(entity)
                         retryController.resetRetryCount()
                     } ?: run {
                         _state.value = HomeState.HomeError("Resposta nula")

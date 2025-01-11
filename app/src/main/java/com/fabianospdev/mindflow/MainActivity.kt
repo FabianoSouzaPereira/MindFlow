@@ -13,6 +13,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.fabianospdev.mindflow.core.routes.Routes
 import com.fabianospdev.mindflow.features.home.presentation.ui.home.HomeScreen
 import com.fabianospdev.mindflow.features.login.presentation.ui.login.LoginScreen
 import com.fabianospdev.mindflow.features.login.presentation.ui.theme.MindFlowTheme
@@ -31,22 +32,23 @@ class MainActivity : ComponentActivity() {
             Surface(modifier = Modifier.fillMaxSize(), color = Color.Transparent, tonalElevation = 5.dp) {
                 MindFlowTheme {
                     navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = context.getString(R.string.splash)) {
-                        composable(getString(R.string.splash)) {
-                            SplashScreen(navController = navController, name = context.getString(R.string.splash))
+                    NavHost(navController = navController, startDestination = Routes.SPLASH) {
+                        composable(Routes.SPLASH) {
+                            SplashScreen(navController = navController)
                         }
-                        composable(context.getString(R.string.login)) {
-                            LoginScreen(navController = navController, name = context.getString(R.string.login))
+                        composable(Routes.LOGIN) {
+                            LoginScreen(navController = navController)
                         }
-                        composable(context.getString(R.string.home)) {
-                            HomeScreen(navController = navController, name = context.getString(R.string.home))
+                        composable(Routes.HOME) {
+                            HomeScreen (navController = navController)
                         }
-                        composable(context.getString(R.string.settings)) {
-                            SettingsScreen(navController = navController, name = context.getString(R.string.settings))
+                        composable(Routes.SETTINGS) {
+                            SettingsScreen(navController = navController)
                         }
                     }
                 }
             }
         }
     }
+
 }
