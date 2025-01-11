@@ -11,10 +11,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavHostController
+import com.fabianospdev.mindflow.core.utils.LoadFontsFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,15 +25,17 @@ fun HomeCenterAlignedTopAppBar(navController: NavHostController, onMenuClick: ()
 
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-        ),
+            containerColor = Color.Transparent,
+            titleContentColor = Color.Transparent,
+
+            ),
         title = {
             Text(
                 text = "MindFlow",
-                fontStyle = FontStyle.Normal,
+                fontStyle = FontStyle.Italic,
                 fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.titleMedium,
+                fontFamily = LoadFontsFamily.montserratFamily,
+                style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onPrimary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
                             LoginScreen(navController = navController)
                         }
                         composable(Routes.HOME) {
-                            HomeScreen (navController = navController)
+                            HomeScreen(navController = navController)
                         }
                         composable(Routes.SETTINGS) {
                             SettingsScreen(navController = navController)
@@ -50,5 +50,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
 }

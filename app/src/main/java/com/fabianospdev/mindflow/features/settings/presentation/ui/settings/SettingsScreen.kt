@@ -10,10 +10,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.fabianospdev.mindflow.R
 import com.fabianospdev.mindflow.features.settings.presentation.ui.settings.states.SettingsState
 import com.fabianospdev.mindflow.features.settings.presentation.viewmodel.SettingsViewModel
 
@@ -37,16 +41,19 @@ fun SettingsScreen(
                 CircularProgressIndicator()
             }
         }
+
         is SettingsState.SettingsIdle -> {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White),
+                    .background(color = Color.Transparent)
+                    .paint(painterResource(id = R.drawable.sunrise_ociano), contentScale = ContentScale.FillBounds),
                 contentAlignment = Alignment.Center
             ) {
                 Text("SettingsIdle")
             }
         }
+
         is SettingsState.SettingsSuccess -> {
             Box(
                 modifier = Modifier
@@ -57,6 +64,7 @@ fun SettingsScreen(
                 Text("SettingsSuccess")
             }
         }
+
         is SettingsState.SettingsError -> {
             Box(
                 modifier = Modifier
@@ -67,6 +75,7 @@ fun SettingsScreen(
                 Text("SettingsError")
             }
         }
+
         is SettingsState.SettingsNoConnection -> {
             Box(
                 modifier = Modifier
@@ -77,6 +86,7 @@ fun SettingsScreen(
                 Text("SettingsNoConnection ")
             }
         }
+
         is SettingsState.SettingsTimeoutError -> {
             Box(
                 modifier = Modifier
@@ -87,6 +97,7 @@ fun SettingsScreen(
                 Text("SettingsTimeoutError")
             }
         }
+
         is SettingsState.SettingsUnauthorized -> {
             Box(
                 modifier = Modifier
@@ -97,6 +108,7 @@ fun SettingsScreen(
                 Text("SettingsUnauthorized")
             }
         }
+
         is SettingsState.SettingsValidationError -> {
             Box(
                 modifier = Modifier
@@ -107,6 +119,7 @@ fun SettingsScreen(
                 Text("SettingsValidationError")
             }
         }
+
         else -> {
             SettingsState.SettingsUnknown("Error State Unknown")
             Box(

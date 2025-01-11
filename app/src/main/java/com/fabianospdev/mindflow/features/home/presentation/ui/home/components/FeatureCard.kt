@@ -1,6 +1,7 @@
 package com.fabianospdev.mindflow.features.home.presentation.ui.home.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,6 +36,7 @@ fun FeatureCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .background(color = Color.Transparent)
             .padding(vertical = 8.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),

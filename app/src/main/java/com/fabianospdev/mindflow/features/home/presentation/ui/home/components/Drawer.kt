@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -39,7 +40,8 @@ fun Drawer(navController: NavHostController, statusBarHeight: Dp) {
             ) {
                 Box(
                     modifier = Modifier
-                        .wrapContentSize(),
+                        .wrapContentSize()
+                        .background(color = Color.Transparent),
                     contentAlignment = Alignment.TopEnd
                 ) {
                     Column(
@@ -52,11 +54,11 @@ fun Drawer(navController: NavHostController, statusBarHeight: Dp) {
                     ) {
                         Spacer(modifier = Modifier.height(8.dp))
                         DrawerItem(navController, text = "Home")
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         DrawerItem(navController, text = "Settings")
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         DrawerItem(navController, text = "Login")
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                     }
                 }
             }

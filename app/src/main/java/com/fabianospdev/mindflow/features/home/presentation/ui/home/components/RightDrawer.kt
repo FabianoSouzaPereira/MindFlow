@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -42,7 +41,7 @@ fun RightDrawer(
                     .fillMaxHeight()
                     .width(300.dp)
                     .align(Alignment.CenterEnd)
-                    .background(MaterialTheme.colorScheme.background)
+                    .background(color = Color.Transparent)
             ) {
                 drawerContent()
             }
@@ -52,7 +51,7 @@ fun RightDrawer(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.32f))
+                    .background(color = Color.Transparent)
                     .clickable {
                         scope.launch { drawerState.close() }
                     }
