@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.androidx.security.crypto.ktx)
+    implementation(libs.androidx.constraintlayout)
     ksp(libs.dagger.hilt.compiler)
     ksp(libs.hilt.viewmodel.compiler)
     implementation(libs.hilt.navigation.compose)

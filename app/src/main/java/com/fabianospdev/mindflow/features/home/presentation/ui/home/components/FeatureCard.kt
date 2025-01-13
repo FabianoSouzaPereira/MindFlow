@@ -1,8 +1,10 @@
 package com.fabianospdev.mindflow.features.home.presentation.ui.home.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,46 +37,54 @@ fun FeatureCard(
     gradient: Brush,
     onClick: () -> Unit
 ) {
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = Color.Transparent)
+            .background(Color.Transparent)
             .padding(vertical = 8.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(4.dp)
+        border = BorderStroke(2.dp, Color.DarkGray.copy(alpha = 0.8f)),
+        elevation = CardDefaults.cardElevation(8.dp)
     ) {
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
-                .background(color = Color.Transparent),
-            verticalAlignment = Alignment.CenterVertically
+                .background(brush = gradient)
         ) {
-            Image(
-                painter = painterResource(id = iconRes),
-                contentDescription = null,
-                modifier = Modifier.size(48.dp),
-                colorFilter = ColorFilter.tint(iconColor)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Column(
+            Row(
                 modifier = Modifier
-                    .background(color = Color.Transparent),
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .background(Color.Transparent),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = title,
-                    fontStyle = FontStyle.Normal,
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary
+                Image(
+                    painter = painterResource(id = iconRes),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp),
+                    colorFilter = ColorFilter.tint(iconColor)
                 )
-                Text(
-                    text = description,
-                    fontStyle = FontStyle.Normal,
-                    fontWeight = FontWeight.Light,
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Column(
+                    modifier = Modifier
+                        .background(Color.Transparent),
+                ) {
+                    Text(
+                        text = title,
+                        fontStyle = FontStyle.Normal,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = description,
+                        fontStyle = FontStyle.Normal,
+                        fontWeight = FontWeight.Light,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
             }
         }
     }

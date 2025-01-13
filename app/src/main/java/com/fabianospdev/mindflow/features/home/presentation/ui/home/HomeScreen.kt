@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,8 +29,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -65,6 +68,17 @@ fun HomeScreen(
             MaterialTheme.colorScheme.secondary
         )
     )
+    val gradient2 = Brush.linearGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+            MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f),
+            MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+            MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.1f),
+        ),
+        start = Offset(0f, 0f),
+        end = Offset(600f, 600f),
+        tileMode = TileMode.Clamp
+    )
 
     val view = LocalView.current
     val insets = WindowInsetsCompat.toWindowInsetsCompat(view.rootWindowInsets)
@@ -95,6 +109,7 @@ fun HomeScreen(
             containerColor = Color.Transparent,
             contentColor = Color.Transparent
         ) { paddingValues ->
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -127,15 +142,18 @@ fun HomeScreen(
                             Column(
                                 verticalArrangement = Arrangement.Bottom,
                                 modifier = Modifier
+                                    .fillMaxHeight()
                                     .background(color = Color.Transparent)
+                                    .padding(
+                                        top = 80.dp
+                                    )
                             ) {
-
                                 Box(
                                     modifier = Modifier
                                         .wrapContentSize()
-                                        .background(brush = gradient)
+                                        .background(color = Color.Transparent)
                                         .padding(
-                                            bottom = 24.dp,
+                                            bottom = paddingValues.calculateBottomPadding(),
                                             start = 16.dp,
                                             end = 16.dp
                                         ),
@@ -145,8 +163,8 @@ fun HomeScreen(
                                         verticalArrangement = Arrangement.Bottom,
                                         modifier = Modifier
                                             .wrapContentSize()
-                                            .background(brush = gradient)
-                                            .verticalScroll(rememberScrollState())
+                                            .background(color = Color.Transparent)
+                                            .verticalScroll(rememberScrollState()),
                                     ) {
                                         Spacer(modifier = Modifier.weight(1f))
                                         Text(
@@ -159,7 +177,7 @@ fun HomeScreen(
                                             description = "Selecione suas emoções e registre seus pensamentos.",
                                             iconRes = R.drawable.mood_48dp,
                                             iconColor = MaterialTheme.colorScheme.primary,
-                                            gradient = gradient,
+                                            gradient = gradient2,
                                             onClick = { /* Navegar para a tela de Registro Emocional */ }
                                         )
                                         FeatureCard(
@@ -167,7 +185,7 @@ fun HomeScreen(
                                             description = "Meditação, respiração e outros exercícios.",
                                             iconRes = R.drawable.exercise_48dp,
                                             iconColor = MaterialTheme.colorScheme.primary,
-                                            gradient = gradient,
+                                            gradient = gradient2,
                                             onClick = { /* Navegar para a tela de Exercícios Guiados */ }
                                         )
                                         FeatureCard(
@@ -175,7 +193,7 @@ fun HomeScreen(
                                             description = "Artigos e dicas sobre saúde mental.",
                                             iconRes = R.drawable.school_48dp,
                                             iconColor = MaterialTheme.colorScheme.primary,
-                                            gradient = gradient,
+                                            gradient = gradient2,
                                             onClick = { /* Navegar para a tela de Conteúdo Educativo */ }
                                         )
                                         PrivacyPolicySection(onPrivacyClick = { /* Mostrar Política de Privacidade */ })
