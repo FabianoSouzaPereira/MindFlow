@@ -15,13 +15,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.fabianospdev.mindflow.R
 import com.fabianospdev.mindflow.core.utils.LoadFontsFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeCenterAlignedTopAppBar(navController: NavHostController, onMenuClick: () -> Unit) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+    val sourGummyExpandedLight = LoadFontsFamily.sourGummyFamily.apply { R.font.sourgummy_expanded_light to FontWeight.Light }
 
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -34,8 +37,13 @@ fun HomeCenterAlignedTopAppBar(navController: NavHostController, onMenuClick: ()
                 text = "MindFlow",
                 fontStyle = FontStyle.Italic,
                 fontWeight = FontWeight.Bold,
-                fontFamily = LoadFontsFamily.montserratFamily,
-                style = MaterialTheme.typography.titleLarge,
+                fontFamily = LoadFontsFamily.sourGummyFamily,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontFamily = sourGummyExpandedLight,
+                    fontWeight = FontWeight.Light,
+                    fontStyle = FontStyle.Normal,
+                    fontSize = 30.sp
+                ),
                 color = MaterialTheme.colorScheme.onPrimary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

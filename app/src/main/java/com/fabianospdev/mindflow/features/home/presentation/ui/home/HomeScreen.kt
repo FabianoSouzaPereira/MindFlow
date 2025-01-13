@@ -2,6 +2,7 @@ package com.fabianospdev.mindflow.features.home.presentation.ui.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -96,8 +98,11 @@ fun HomeScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = Color.Transparent)
-                    .paint(painterResource(id = R.drawable.sunrise_ociano), contentScale = ContentScale.FillBounds)
+                    .paint(
+                        painterResource(id = R.drawable.sunrise_ociano),
+                        contentScale = ContentScale.FillBounds,
+                        alpha = 0.8f
+                    )
             ) {
                 when (state) {
                     is HomeState.HomeLoading -> {
@@ -119,54 +124,66 @@ fun HomeScreen(
                             color = Color.Transparent,
                             contentColor = Color.Transparent
                         ) {
-                            Box(
+                            Column(
+                                verticalArrangement = Arrangement.Bottom,
                                 modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(
-                                        top = paddingValues.calculateTopPadding(),
-                                        bottom = paddingValues.calculateBottomPadding(),
-                                        start = 16.dp,
-                                        end = 16.dp
-                                    )
+                                    .background(color = Color.Transparent)
                             ) {
-                                Column(
+
+                                Box(
                                     modifier = Modifier
-                                        .fillMaxSize()
-                                        .verticalScroll(rememberScrollState())
+                                        .wrapContentSize()
+                                        .background(brush = gradient)
+                                        .padding(
+                                            bottom = 24.dp,
+                                            start = 16.dp,
+                                            end = 16.dp
+                                        ),
+                                    contentAlignment = Alignment.BottomCenter
                                 ) {
-                                    Spacer(modifier = Modifier.weight(1f))
-                                    Text(
-                                        text = "Bem-vindo(a) ao MindFlow",
-                                        style = MaterialTheme.typography.labelSmall
-                                    )
-                                    Spacer(modifier = Modifier.height(16.dp))
-                                    FeatureCard(
-                                        title = "Registro Emocional",
-                                        description = "Selecione suas emoções e registre seus pensamentos.",
-                                        iconRes = R.drawable.mood_48dp,
-                                        iconColor = MaterialTheme.colorScheme.primary,
-                                        onClick = { /* Navegar para a tela de Registro Emocional */ }
-                                    )
-                                    FeatureCard(
-                                        title = "Exercícios Guiados",
-                                        description = "Meditação, respiração e outros exercícios.",
-                                        iconRes = R.drawable.exercise_48dp,
-                                        iconColor = MaterialTheme.colorScheme.primary,
-                                        onClick = { /* Navegar para a tela de Exercícios Guiados */ }
-                                    )
-                                    FeatureCard(
-                                        title = "Conteúdo Educativo",
-                                        description = "Artigos e dicas sobre saúde mental.",
-                                        iconRes = R.drawable.school_48dp,
-                                        iconColor = MaterialTheme.colorScheme.primary,
-                                        onClick = { /* Navegar para a tela de Conteúdo Educativo */ }
-                                    )
-                                    PrivacyPolicySection(onPrivacyClick = { /* Mostrar Política de Privacidade */ })
+                                    Column(
+                                        verticalArrangement = Arrangement.Bottom,
+                                        modifier = Modifier
+                                            .wrapContentSize()
+                                            .background(brush = gradient)
+                                            .verticalScroll(rememberScrollState())
+                                    ) {
+                                        Spacer(modifier = Modifier.weight(1f))
+                                        Text(
+                                            text = "Bem-vindo(a) ao MindFlow",
+                                            style = MaterialTheme.typography.labelSmall
+                                        )
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                        FeatureCard(
+                                            title = "Registro Emocional",
+                                            description = "Selecione suas emoções e registre seus pensamentos.",
+                                            iconRes = R.drawable.mood_48dp,
+                                            iconColor = MaterialTheme.colorScheme.primary,
+                                            gradient = gradient,
+                                            onClick = { /* Navegar para a tela de Registro Emocional */ }
+                                        )
+                                        FeatureCard(
+                                            title = "Exercícios Guiados",
+                                            description = "Meditação, respiração e outros exercícios.",
+                                            iconRes = R.drawable.exercise_48dp,
+                                            iconColor = MaterialTheme.colorScheme.primary,
+                                            gradient = gradient,
+                                            onClick = { /* Navegar para a tela de Exercícios Guiados */ }
+                                        )
+                                        FeatureCard(
+                                            title = "Conteúdo Educativo",
+                                            description = "Artigos e dicas sobre saúde mental.",
+                                            iconRes = R.drawable.school_48dp,
+                                            iconColor = MaterialTheme.colorScheme.primary,
+                                            gradient = gradient,
+                                            onClick = { /* Navegar para a tela de Conteúdo Educativo */ }
+                                        )
+                                        PrivacyPolicySection(onPrivacyClick = { /* Mostrar Política de Privacidade */ })
+                                    }
                                 }
                             }
                         }
                     }
-
 
                     is HomeState.HomeSuccess -> {
                         Box(

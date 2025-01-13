@@ -9,6 +9,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MailOutline
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.rememberDrawerState
@@ -34,9 +40,10 @@ fun Drawer(navController: NavHostController, statusBarHeight: Dp) {
             Column(
                 modifier = Modifier
                     .wrapContentSize()
+                    .verticalScroll(rememberScrollState())
                     .padding(top = topPadding, end = 0.dp)
-                    .background(MaterialTheme.colorScheme.primary)
-                    .border(0.1.dp, MaterialTheme.colorScheme.onPrimary),
+                    .background(color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.1f))
+                    .border(0.1.dp, MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.4f)),
             ) {
                 Box(
                     modifier = Modifier
@@ -46,19 +53,19 @@ fun Drawer(navController: NavHostController, statusBarHeight: Dp) {
                 ) {
                     Column(
                         modifier = Modifier
-                            .background(MaterialTheme.colorScheme.primary)
+                            .background(color = Color.Transparent)
                             .wrapContentSize()
                             .then(
-                                Modifier.widthIn(max = 300.dp)
+                                Modifier.widthIn(max = 200.dp)
                             )
                     ) {
                         Spacer(modifier = Modifier.height(8.dp))
-                        DrawerItem(navController, text = "Home")
-                        Spacer(modifier = Modifier.height(4.dp))
-                        DrawerItem(navController, text = "Settings")
-                        Spacer(modifier = Modifier.height(4.dp))
-                        DrawerItem(navController, text = "Login")
-                        Spacer(modifier = Modifier.height(4.dp))
+                        DrawerItem(navController, text = "Home", icon = Icons.Filled.Home)
+                        Spacer(modifier = Modifier.height(2.dp))
+                        DrawerItem(navController, text = "Settings", icon = Icons.Filled.Settings)
+                        Spacer(modifier = Modifier.height(2.dp))
+                        DrawerItem(navController, text = "Login", icon = Icons.Filled.MailOutline)
+                        Spacer(modifier = Modifier.height(2.dp))
                     }
                 }
             }

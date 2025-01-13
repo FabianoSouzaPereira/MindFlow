@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
@@ -31,6 +32,7 @@ fun FeatureCard(
     description: String,
     iconRes: Int,
     iconColor: Color = MaterialTheme.colorScheme.primary,
+    gradient: Brush,
     onClick: () -> Unit
 ) {
     Card(
@@ -45,7 +47,8 @@ fun FeatureCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(16.dp)
+                .background(color = Color.Transparent),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
@@ -55,7 +58,10 @@ fun FeatureCard(
                 colorFilter = ColorFilter.tint(iconColor)
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Column {
+            Column(
+                modifier = Modifier
+                    .background(color = Color.Transparent),
+            ) {
                 Text(
                     text = title,
                     fontStyle = FontStyle.Normal,
