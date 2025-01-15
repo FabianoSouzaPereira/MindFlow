@@ -104,7 +104,8 @@ fun HomeScreen(
                         scope.launch {
                             drawerState.open()
                         }
-                    })
+                    }
+                )
             },
             containerColor = Color.Transparent,
             contentColor = Color.Transparent

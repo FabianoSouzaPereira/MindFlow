@@ -12,7 +12,20 @@
           "package_name": "com.fabianospdev.mindflow"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1081401672713-p6etebq4jqq4h210jvusqqi469db1ddb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fabianospdev.mindflow",
+            "certificate_hash": "926d1267f9481bf2a2770203a91e59d9394a41bf"
+          }
+        },
+        {
+          "client_id": "1081401672713-v27kdg65494krrks6hi037u9m7hpkv3r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCo3ohTahbEfIRWnMUoDCdA7Dsfw_JSW-Y"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1081401672713-v27kdg65494krrks6hi037u9m7hpkv3r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

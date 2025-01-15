@@ -2,8 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.hilt.android)
     id("com.google.devtools.ksp") version "2.1.0-1.0.29"
-    id("com.google.dagger.hilt.android") version "2.51.1"
     id("com.google.gms.google-services")
 }
 
@@ -39,7 +39,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.0"
         kotlinOptions {
-          //  freeCompilerArgs += listOf("-Xlint:deprecation")
+            //  freeCompilerArgs += listOf("-Xlint:deprecation")
         }
     }
 
@@ -65,7 +65,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    
+
     // Hilt
     implementation(libs.dagger.hilt)
     implementation(libs.androidx.runtime.livedata)
@@ -97,4 +97,6 @@ dependencies {
 
     // Firebase
     implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore.ktx)
 }
