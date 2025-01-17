@@ -31,22 +31,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowInsetsCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fabianospdev.mindflow.R
-import com.fabianospdev.mindflow.core.helpers.AppConfig
-import com.fabianospdev.mindflow.core.helpers.RetryController
-import com.fabianospdev.mindflow.features.emotional_record.domain.usecases.EmotionalRecordRemoteUseCase
-import com.fabianospdev.mindflow.features.emotional_record.presentation.ui.emotional_record.states.EmotionalRecordError
-import com.fabianospdev.mindflow.features.emotional_record.presentation.ui.emotional_record.states.EmotionalRecordIdle
-import com.fabianospdev.mindflow.features.emotional_record.presentation.ui.emotional_record.states.EmotionalRecordLoading
-import com.fabianospdev.mindflow.features.emotional_record.presentation.ui.emotional_record.states.EmotionalRecordNoConnection
-import com.fabianospdev.mindflow.features.emotional_record.presentation.ui.emotional_record.states.EmotionalRecordState
-import com.fabianospdev.mindflow.features.emotional_record.presentation.ui.emotional_record.states.EmotionalRecordSuccess
-import com.fabianospdev.mindflow.features.emotional_record.presentation.ui.emotional_record.states.EmotionalRecordTimeoutError
-import com.fabianospdev.mindflow.features.emotional_record.presentation.ui.emotional_record.states.EmotionalRecordUnknown
-import com.fabianospdev.mindflow.features.emotional_record.presentation.ui.emotional_record.states.EmotionalRecordValidationError
 import com.fabianospdev.mindflow.features.emotional_record.presentation.viewmodel.EmotionalRecordViewModel
 import com.fabianospdev.mindflow.features.home.presentation.ui.home.components.Drawer
 import com.fabianospdev.mindflow.features.home.presentation.ui.home.components.HomeCenterAlignedTopAppBar
@@ -58,7 +45,7 @@ fun EmotionalRecordScreen(
     navController: NavHostController
 ) {
 
-    val state by viewModel.state.observeAsState(EmotionalRecordState.EmotionalRecordIdle)
+    val state by viewModel.state.observeAsState(EmotionalRecordIdle)
 
     val view = LocalView.current
     val insets = WindowInsetsCompat.toWindowInsetsCompat(view.rootWindowInsets)
@@ -203,7 +190,7 @@ fun EmotionalRecordScreen(
                     }
 
                     else -> {
-                        EmotionalRecordState.EmotionalRecordUnknown("Error State Unknown")
+                        EmotionalRecordUnknown("Error State Unknown")
                     }
                 }
             }
