@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fabianospdev.mindflow.R
+import com.fabianospdev.mindflow.features.emotional_record.presentation.ui.emotional_record.states.EmotionalRecordState
 import com.fabianospdev.mindflow.features.emotional_record.presentation.viewmodel.EmotionalRecordViewModel
 import com.fabianospdev.mindflow.features.home.presentation.ui.home.components.Drawer
 import com.fabianospdev.mindflow.features.home.presentation.ui.home.components.HomeCenterAlignedTopAppBar
@@ -45,7 +46,7 @@ fun EmotionalRecordScreen(
     navController: NavHostController
 ) {
 
-    val state by viewModel.state.observeAsState(EmotionalRecordIdle)
+    val state by viewModel.state.observeAsState(EmotionalRecordState.EmotionalRecordIdle)
 
     val view = LocalView.current
     val insets = WindowInsetsCompat.toWindowInsetsCompat(view.rootWindowInsets)
@@ -87,7 +88,7 @@ fun EmotionalRecordScreen(
                     )
             ) {
                 when (state) {
-                    is EmotionalRecordLoading -> {
+                    is EmotionalRecordState.EmotionalRecordLoading -> {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -98,7 +99,7 @@ fun EmotionalRecordScreen(
                         }
                     }
 
-                    is EmotionalRecordIdle -> {
+                    is EmotionalRecordState.EmotionalRecordIdle -> {
                         Surface(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -123,7 +124,7 @@ fun EmotionalRecordScreen(
                         }
                     }
 
-                    is EmotionalRecordSuccess -> {
+                    is EmotionalRecordState.EmotionalRecordSuccess -> {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -134,7 +135,7 @@ fun EmotionalRecordScreen(
                         }
                     }
 
-                    is EmotionalRecordError -> {
+                    is EmotionalRecordState.EmotionalRecordError -> {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -145,7 +146,7 @@ fun EmotionalRecordScreen(
                         }
                     }
 
-                    is EmotionalRecordNoConnection -> {
+                    is EmotionalRecordState.EmotionalRecordNoConnection -> {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -156,7 +157,7 @@ fun EmotionalRecordScreen(
                         }
                     }
 
-                    is EmotionalRecordTimeoutError -> {
+                    is EmotionalRecordState.EmotionalRecordTimeoutError -> {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -167,7 +168,7 @@ fun EmotionalRecordScreen(
                         }
                     }
 
-                    is EmotionalRecordUnknown -> {
+                    is EmotionalRecordState.EmotionalRecordUnknown -> {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -178,7 +179,7 @@ fun EmotionalRecordScreen(
                         }
                     }
 
-                    is EmotionalRecordValidationError -> {
+                    is EmotionalRecordState.EmotionalRecordValidationError -> {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -190,7 +191,7 @@ fun EmotionalRecordScreen(
                     }
 
                     else -> {
-                        EmotionalRecordUnknown("Error State Unknown")
+                        EmotionalRecordState.EmotionalRecordUnknown("Error State Unknown")
                     }
                 }
             }

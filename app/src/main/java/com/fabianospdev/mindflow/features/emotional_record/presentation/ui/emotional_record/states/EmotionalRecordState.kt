@@ -4,6 +4,7 @@ import com.fabianospdev.mindflow.features.emotional_record.domain.entities.Emoti
 
 sealed class EmotionalRecordState {
     object EmotionalRecordLoading : EmotionalRecordState()
+
     object EmotionalRecordIdle : EmotionalRecordState()
 
     data class EmotionalRecordSuccess(val response: EmotionalRecordResponseEntity) : EmotionalRecordState()
@@ -15,8 +16,11 @@ sealed class EmotionalRecordState {
     }
 
     data class EmotionalRecordNoConnection(val errorMessage: String) : EmotionalRecordState()
+
     data class EmotionalRecordValidationError(val message: String) : EmotionalRecordState()
+
     data class EmotionalRecordTimeoutError(val message: String) : EmotionalRecordState()
+
     data class EmotionalRecordUnauthorized(val message: String) : EmotionalRecordState()
 
     data class EmotionalRecordUnknown(val message: String) : EmotionalRecordState() {
