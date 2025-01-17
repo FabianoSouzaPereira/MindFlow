@@ -4,8 +4,9 @@ import android.content.Context
 import com.fabianospdev.mindflow.features.home.data.datasources.HomeDataSource
 import com.fabianospdev.mindflow.features.home.domain.entities.HomeResponseEntity
 import com.fabianospdev.mindflow.features.home.domain.repositories.HomeRemoteRepository
+import javax.inject.Inject
 
-class HomeRemoteRepositoryImpl(
+class HomeRemoteRepositoryImpl @Inject constructor(
     private val homeDataSource: HomeDataSource,
     private val context: Context
 ) : HomeRemoteRepository {
