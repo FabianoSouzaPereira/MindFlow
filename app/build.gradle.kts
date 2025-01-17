@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.kotlin.serialization)
     id("com.google.devtools.ksp") version "2.1.0-1.0.29"
     id("com.google.gms.google-services")
 }
@@ -72,6 +73,7 @@ dependencies {
     implementation(libs.firebase.auth.ktx)
     implementation(libs.androidx.security.crypto.ktx)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.kotlinx.serialization.json)
     ksp(libs.dagger.hilt.compiler)
     ksp(libs.hilt.viewmodel.compiler)
     implementation(libs.hilt.navigation.compose)
