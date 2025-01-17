@@ -7,13 +7,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class WordRegionsRelationalModel(
     @SerialName("worldRegions")
-    override val worldRegions: WorldRegionsClassRelationalModel
+    override val worldRegions: WorldRegionsClassRelationalModel = WorldRegionsClassRelationalModel()
 ) : WordRegionsEntity
-
-
-
-
-
-
-
-
