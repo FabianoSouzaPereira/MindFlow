@@ -1,4 +1,7 @@
 package com.fabianospdev.mindflow.features.emotional_record.data.datasources
 
-class EmotionalRecordDatasource {
+import com.fabianospdev.mindflow.features.emotional_record.data.models.EmotionalRecordResponseModel
+
+interface EmotionalRecordDatasource {
+    suspend fun getEmotionalRecordContent(): EmotionalRecordResponseModel
 }
