@@ -1,14 +1,19 @@
 package com.fabianospdev.mindflow.features.settings.data.datasources
 
 import com.fabianospdev.mindflow.features.settings.data.models.SettingsResponseModel
-import com.fabianospdev.mindflow.features.settings.data.models.globalSettings.GlobalSettingsRelationalModel
+import com.fabianospdev.mindflow.features.settings.data.models.relational.globalSettings.GlobalSettingsRelationalModel
 import javax.inject.Inject
 
 class SettingsRemoteDataSource @Inject constructor(
     private val settings: SettingsDataSource
 ) : SettingsDataSource() {
-    override suspend fun getSettings(): SettingsResponseModel {
-        TODO("Not yet implemented")
+    override suspend fun getSettings(): GlobalSettingsRelationalModel? {
+        try {
+
+            return settings.getSettings()
+        } catch (e: Exception) {
+            throw Throwable("Authentication error: ${e.message}", e)
+        }
     }
 
     override suspend fun setSettings(model: GlobalSettingsRelationalModel): SettingsResponseModel {

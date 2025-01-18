@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.RetryController
 import com.fabianospdev.mindflow.core.helpers.exceptions.CommonError
+import com.fabianospdev.mindflow.features.settings.data.models.firebase.globalSettings.GlobalSettingsFirestoreModel
+import com.fabianospdev.mindflow.features.settings.data.models.relational.globalSettings.GlobalSettingsRelationalModel
 import com.fabianospdev.mindflow.features.settings.domain.usecases.SettingsRemoteUseCase
 import com.fabianospdev.mindflow.features.settings.presentation.ui.settings.SettingsError
 import com.fabianospdev.mindflow.features.settings.presentation.ui.settings.states.SettingsState
@@ -43,7 +45,7 @@ class SettingsViewModel @Inject constructor(
                 val result = useCase.getSettings()
                 if (result.isSuccess) {
                     result.getOrNull()?.let { entity ->
-                        _state.value = SettingsState.SettingsSuccess(entity)
+                        _state.value = SettingsState.SettingsSuccess(entity = entity, null)
                         retryController.resetRetryCount()
                     } ?: run {
                         _state.value = SettingsState.SettingsError("Resposta nula")
@@ -78,7 +80,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun setSettings(configuration: Any) {
+    fun setSettings(configuration: GlobalSettingsFirestoreModel) {
 
         if (!retryController.isRetryEnabled.value) {
             _showRetryLimitReached.value = true
@@ -88,9 +90,48 @@ class SettingsViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val result = useCase.setSettings(configuration)
+                val result = useCase.setSettings(model = configuration)
                 if (result.isSuccess) {
-                    _state.value = SettingsState.SettingsSuccess(result)
+                    _state.value = SettingsState.SettingsSuccess(entity = null, response = result.getOrNull())
+                    retryController.resetRetryCount()
+                } else {
+                    retryController.incrementRetryCount()
+                    _state.value = SettingsState.SettingsError("Falha ao salvar as configurações.")
+                }
+            } catch (e: Exception) {
+                retryController.incrementRetryCount()
+                _state.value = when (e) {
+                    is com.fabianospdev.mindflow.core.helpers.exceptions.TimeoutException -> SettingsState.SettingsTimeoutError(
+                        CommonError.TimeoutError.message
+                    )
+
+                    is com.fabianospdev.mindflow.core.helpers.exceptions.UnauthorizedException -> SettingsState.SettingsUnauthorized(
+                        CommonError.Unauthorized.message
+                    )
+
+                    is com.fabianospdev.mindflow.core.helpers.exceptions.ValidationException -> SettingsState.SettingsValidationError(
+                        CommonError.ValidationError.message
+                    )
+
+                    else -> SettingsState.SettingsError("Erro inesperado ao salvar as configurações.")
+                }
+            }
+        }
+    }
+
+    fun setSettings(configuration: GlobalSettingsRelationalModel) {
+
+        if (!retryController.isRetryEnabled.value) {
+            _showRetryLimitReached.value = true
+            return
+        }
+        _state.value = SettingsState.SettingsLoading
+
+        viewModelScope.launch {
+            try {
+                val result = useCase.setSettings(model = configuration)
+                if (result.isSuccess) {
+                    _state.value = SettingsState.SettingsSuccess(entity = null, response = result.getOrNull())
                     retryController.resetRetryCount()
                 } else {
                     retryController.incrementRetryCount()

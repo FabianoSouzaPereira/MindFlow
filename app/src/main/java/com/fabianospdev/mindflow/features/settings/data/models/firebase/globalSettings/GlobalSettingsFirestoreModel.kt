@@ -1,6 +1,6 @@
 package com.fabianospdev.mindflow.features.settings.data.models.firebase.globalSettings
 
-import com.fabianospdev.mindflow.features.settings.domain.entities.globalSettings.firebase.GlobalSettingsFirestoreEntity
+import com.fabianospdev.mindflow.features.settings.domain.entities.globalSettings.GlobalSettingsEntity
 
 data class GlobalSettingsFirestoreModel(
     override val maintenanceMode: Boolean,
@@ -15,4 +15,4 @@ data class GlobalSettingsFirestoreModel(
     override val analyticsEnabled: Boolean,
     override val chatEnabled: Boolean,
     override val darkMode: Boolean
-) : GlobalSettingsFirestoreEntity
+) : GlobalSettingsEntity

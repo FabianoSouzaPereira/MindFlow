@@ -1,13 +1,17 @@
 package com.fabianospdev.mindflow.features.settings.presentation.ui.settings.states
 
 import com.fabianospdev.mindflow.features.settings.domain.entities.SettingsResponseEntity
+import com.fabianospdev.mindflow.features.settings.domain.entities.globalSettings.GlobalSettingsEntity
 
 sealed class SettingsState {
     object SettingsLoading : SettingsState()
 
     object SettingsIdle : SettingsState()
 
-    data class SettingsSuccess(val response: SettingsResponseEntity) : SettingsState()
+    data class SettingsSuccess(
+        val entity: GlobalSettingsEntity?,
+        val response: SettingsResponseEntity?
+    ) : SettingsState()
 
     data class SettingsError(val error: String) : SettingsState() {
         fun isNetworkRelated(): Boolean {

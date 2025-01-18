@@ -4,7 +4,7 @@ import com.fabianospdev.mindflow.features.user_profile.domain.entities.ProfileEn
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class ProfileModel(
+data class ProfileFirestoreModel(
     override val id: Long,
     override val fullName: String,
     override val username: String,

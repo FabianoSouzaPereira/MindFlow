@@ -3,6 +3,7 @@ package com.fabianospdev.mindflow.features.settings.data.datasources
 import android.util.Log
 import com.fabianospdev.mindflow.features.settings.data.models.SettingsResponseModel
 import com.fabianospdev.mindflow.features.settings.data.models.firebase.globalSettings.GlobalSettingsFirestoreModel
+import com.fabianospdev.mindflow.features.settings.data.models.relational.globalSettings.GlobalSettingsRelationalModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
@@ -12,24 +13,20 @@ class SettingsFirebaseDataSource @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : SettingsDataSource() {
 
-    override suspend fun getSettings(): SettingsResponseModel {
+    override suspend fun getSettings(): GlobalSettingsRelationalModel? {
         return try {
-
             val documentSnapshot = firestore.collection("GlobalSettingsConfiguration")
                 .document("default").get().await()
 
             if (documentSnapshot.exists()) {
-                val configuration = documentSnapshot.toObject(GlobalSettingsFirestoreModel::class.java)
-                SettingsResponseModel(success = true, data = configuration)
+                documentSnapshot.toObject(GlobalSettingsRelationalModel::class.java)
             } else {
-                SettingsResponseModel(success = false, message = "Document not found")
+                null
             }
-
         } catch (e: Exception) {
-            SettingsResponseModel(success = false, message = "Error fetching settings: ${e.message}")
+            null
         }
     }
-
 
     override suspend fun setSettings(model: GlobalSettingsFirestoreModel): SettingsResponseModel {
         return try {

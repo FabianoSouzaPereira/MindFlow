@@ -21,9 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.fabianospdev.mindflow.R
 import com.fabianospdev.mindflow.features.settings.data.models.firebase.globalSettings.GlobalSettingsFirestoreModel
-import com.fabianospdev.mindflow.features.settings.data.models.globalSettings.GlobalSettingsRelationalModel
-import com.fabianospdev.mindflow.features.settings.domain.entities.globalSettings.firebase.GlobalSettingsFirestoreEntity
-import com.fabianospdev.mindflow.features.settings.domain.entities.globalSettings.relacional.GlobalSettingsRemoteEntity
+import com.fabianospdev.mindflow.features.settings.data.models.relational.globalSettings.GlobalSettingsRelationalModel
 import com.fabianospdev.mindflow.features.settings.presentation.ui.settings.states.SettingsState
 import com.fabianospdev.mindflow.features.settings.presentation.viewmodel.SettingsViewModel
 
@@ -37,42 +35,6 @@ fun SettingsScreen(
 
     /** Observing the ViewModel state **/
     val isUsingFirebase by viewModel.isUsingFirebase.collectAsState()
-
-    val settingsRemoteEntity: GlobalSettingsRemoteEntity? = null
-    val settingsfirebaseEntity: GlobalSettingsFirestoreEntity? = null
-    lateinit var settings: Any
-
-    if (isUsingFirebase) {
-        settings = GlobalSettingsFirestoreModel(
-            maintenanceMode = true,
-            defaultLanguage = "Portuguese",
-            privacyPolicyURL = "http://teste.comURL",
-            termsOfServiceURL = "http://termsURL",
-            appVersion = "1.0.0",
-            featureToggle = true,
-            supportContactEmail = "support@email.com",
-            defaultTimezone = "EN",
-            maxUploadSize = 6565665,
-            analyticsEnabled = false,
-            chatEnabled = false,
-            darkMode = false
-        )
-    } else {
-        settings = GlobalSettingsRelationalModel(
-            maintenanceMode = true,
-            defaultLanguage = "Portuguese",
-            privacyPolicyURL = "http://teste.comURL",
-            termsOfServiceURL = "http://termsURL",
-            appVersion = "1.0.0",
-            featureToggle = true,
-            supportContactEmail = "support@email.com",
-            defaultTimezone = "EN",
-            maxUploadSize = 6565665,
-            analyticsEnabled = false,
-            chatEnabled = false,
-            darkMode = false
-        )
-    }
 
     when (state) {
         is SettingsState.SettingsLoading -> {
@@ -95,9 +57,41 @@ fun SettingsScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text("SettingsIdle")
+                if (isUsingFirebase) {
+                    val settings = GlobalSettingsFirestoreModel(
+                        maintenanceMode = true,
+                        defaultLanguage = "Portuguese",
+                        privacyPolicyURL = "http://teste.comURL",
+                        termsOfServiceURL = "http://termsURL",
+                        appVersion = "1.0.0",
+                        featureToggle = true,
+                        supportContactEmail = "support@email.com",
+                        defaultTimezone = "EN",
+                        maxUploadSize = 6565665,
+                        analyticsEnabled = false,
+                        chatEnabled = false,
+                        darkMode = false
+                    )
+                    Button(onClick = { viewModel.setSettings(settings) }) { }
+                } else {
+                    val settings = GlobalSettingsRelationalModel(
+                        maintenanceMode = true,
+                        defaultLanguage = "Portuguese",
+                        privacyPolicyURL = "http://teste.comURL",
+                        termsOfServiceURL = "http://termsURL",
+                        appVersion = "1.0.0",
+                        featureToggle = true,
+                        supportContactEmail = "support@email.com",
+                        defaultTimezone = "EN",
+                        maxUploadSize = 6565665,
+                        analyticsEnabled = false,
+                        chatEnabled = false,
+                        darkMode = false
+                    )
+                    Button(onClick = { viewModel.setSettings(settings) }) { }
+                }
 
 
-                Button(onClick = viewModel.setSettings(settings)) { }
             }
         }
 

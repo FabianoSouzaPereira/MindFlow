@@ -1,6 +1,6 @@
-package com.fabianospdev.mindflow.features.settings.data.models.globalSettings
+package com.fabianospdev.mindflow.features.settings.data.models.relational.globalSettings
 
-import com.fabianospdev.mindflow.features.settings.domain.entities.globalSettings.firebase.GlobalSettingsFirestoreEntity
+import com.fabianospdev.mindflow.features.settings.domain.entities.globalSettings.GlobalSettingsEntity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -41,4 +41,4 @@ data class GlobalSettingsRelationalModel(
 
     @SerialName("darkMode")
     override val darkMode: Boolean
-) : GlobalSettingsFirestoreEntity
+) : GlobalSettingsEntity

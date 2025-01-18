@@ -1,6 +1,6 @@
-package com.fabianospdev.mindflow.features.settings.domain.entities.globalSettings.relacional
+package com.fabianospdev.mindflow.features.settings.domain.entities.globalSettings
 
-interface GlobalSettingsRemoteEntity {
+interface GlobalSettingsEntity {
     val maintenanceMode: Boolean
     val defaultLanguage: String
     val privacyPolicyURL: String
