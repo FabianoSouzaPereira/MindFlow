@@ -8,6 +8,11 @@ class HomeRemoteDataSource @Inject constructor(
 ) : HomeDataSource {
 
     override suspend fun getHomeContent(): HomeResponseModel {
-        return retrofitService.getHomeContent()
+        try {
+
+            return retrofitService.getHomeContent()
+        } catch (e: Exception) {
+            throw Throwable("Authentication error: ${e.message}", e)
+        }
     }
 }

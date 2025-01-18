@@ -1,11 +1,11 @@
 package com.fabianospdev.mindflow.features.settings.data.models.globalSettings
 
-import com.fabianospdev.mindflow.features.settings.domain.entities.globalSettings.GlobalSettingsConfigurationEntity
+import com.fabianospdev.mindflow.features.settings.domain.entities.globalSettings.firebase.GlobalSettingsFirestoreEntity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class GlobalSettingsConfigurationRelational(
+data class GlobalSettingsRelationalModel(
     @SerialName("maintenanceMode")
     override val maintenanceMode: Boolean,
 
@@ -41,4 +41,4 @@ data class GlobalSettingsConfigurationRelational(
 
     @SerialName("darkMode")
     override val darkMode: Boolean
-) : GlobalSettingsConfigurationEntity
+) : GlobalSettingsFirestoreEntity

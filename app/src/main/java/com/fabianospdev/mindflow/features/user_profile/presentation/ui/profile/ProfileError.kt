@@ -1,4 +1,8 @@
 package com.fabianospdev.mindflow.features.user_profile.presentation.ui.profile
 
-class ProfileError {
+import com.fabianospdev.mindflow.core.helpers.exceptions.CommonError
+
+sealed class ProfileError(message: String) : CommonError(message) {
+    object DataLoadFailed : ProfileError("Failed to load data.")
+    object SectionNotAvailable : ProfileError("Section not available.")
 }
