@@ -1,5 +1,6 @@
 package com.fabianospdev.mindflow.features.settings.data.repositories
 
+import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.features.settings.data.datasources.SettingsApi
 import com.fabianospdev.mindflow.features.settings.data.datasources.SettingsDataSource
 import com.fabianospdev.mindflow.features.settings.data.models.firebase.globalSettings.GlobalSettingsFirestoreModel
@@ -10,14 +11,21 @@ import com.fabianospdev.mindflow.features.settings.domain.repositories.SettingsR
 import javax.inject.Inject
 
 class SettingsRemoteRepositoryImpl @Inject constructor(
+    private val appConfig: AppConfig,
     private val settingsApi: SettingsApi,
     private val settingsDataSource: SettingsDataSource
 ) : SettingsRemoteRepository {
+
     override suspend fun getSettings(): Result<GlobalSettingsEntity> {
         return try {
-            val response = settingsDataSource.getSettings()
-            return Result.success(response as GlobalSettingsEntity)
+            val response: GlobalSettingsEntity = if (appConfig.isUsingFirebase.value) {
 
+                settingsDataSource.getSettings()
+            } else {
+
+                settingsApi.getSettings()
+            }
+            Result.success(response)
         } catch (e: Throwable) {
             Result.failure(e)
         }
@@ -27,21 +35,18 @@ class SettingsRemoteRepositoryImpl @Inject constructor(
         return try {
             val response = when (model) {
                 is GlobalSettingsRelationalModel -> {
-                    val response = settingsApi.setSettings(model)
-                    Result.success(response as SettingsResponseEntity)
+                    settingsApi.setSettings(model)
                 }
 
                 is GlobalSettingsFirestoreModel -> {
-                    val response = settingsDataSource.setSettings(model)
-                    Result.success(response as SettingsResponseEntity)
+                    settingsDataSource.setSettings(model)
                 }
 
                 else -> throw IllegalArgumentException("Invalid model type")
             }
-            Result.success(response as SettingsResponseEntity)
+            Result.success(response)
         } catch (e: Throwable) {
             Result.failure(e)
         }
     }
-
 }

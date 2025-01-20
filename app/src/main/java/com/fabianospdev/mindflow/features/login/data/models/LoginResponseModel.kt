@@ -4,5 +4,6 @@ import com.fabianospdev.mindflow.features.login.domain.entities.LoginResponseEnt
 import com.google.gson.annotations.SerializedName
 
 data class LoginResponseModel(
-    @SerializedName("token") override val token: String
+    @SerializedName("token") override val token: String,
+    @SerializedName("adminClaim") override val adminClaim: Boolean? = false
 ) : LoginResponseEntity

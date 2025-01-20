@@ -8,7 +8,7 @@ class SettingsRemoteDataSourceImpl @Inject constructor(
     private val settingsApi: SettingsApi
 ) : SettingsApi {
 
-    override suspend fun getSettings(): GlobalSettingsRelationalModel? {
+    override suspend fun getSettings(): GlobalSettingsRelationalModel {
         return settingsApi.getSettings()
     }
 

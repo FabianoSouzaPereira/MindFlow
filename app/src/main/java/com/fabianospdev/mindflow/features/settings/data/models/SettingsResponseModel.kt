@@ -1,7 +1,9 @@
 package com.fabianospdev.mindflow.features.settings.data.models
 
+import com.fabianospdev.mindflow.features.settings.domain.entities.SettingsResponseEntity
+
 class SettingsResponseModel(
-    val success: Boolean,
-    val message: String? = null,
-    val data: Any? = null
-)
+    override val success: Boolean,
+    override val message: String? = null,
+    override val data: Any? = null
+) : SettingsResponseEntity

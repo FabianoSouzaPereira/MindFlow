@@ -40,7 +40,7 @@ fun SettingsScreen(
         }
 
         is SettingsState.SettingsSuccess -> {
-            ShowSettingsSuccess()
+            ShowSettingsSuccess(viewModel)
         }
 
         is SettingsState.SettingsError -> {

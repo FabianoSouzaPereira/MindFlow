@@ -26,7 +26,7 @@ object SettingsModule {
 
     @Provides
     @Singleton
-    fun provideSettingsDataSource(
+    fun provideSettingsApiDataSource(
         appConfig: AppConfig,
         retrofitDataSource: SettingsRemoteDataSourceImpl
     ): SettingsApi {
@@ -35,19 +35,21 @@ object SettingsModule {
 
     @Provides
     @Singleton
-    fun provideSettingsApiDataSource(
+    fun provideSettingsDataSource(
         appConfig: AppConfig,
         firestore: FirebaseFirestore
     ): SettingsDataSource {
         return SettingsFirebaseDataSourceImpl(firestore)
     }
 
+
     @Provides
     fun provideSettingsRepository(
+        appConfig: AppConfig,
         settingsApi: SettingsApi,
         remoteDataSource: SettingsDataSource
     ): SettingsRemoteRepository {
-        return SettingsRemoteRepositoryImpl(settingsApi, remoteDataSource)
+        return SettingsRemoteRepositoryImpl(appConfig, settingsApi, remoteDataSource)
     }
 
     @Provides

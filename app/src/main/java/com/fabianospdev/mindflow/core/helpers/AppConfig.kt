@@ -12,6 +12,16 @@ class AppConfig(initialState: Boolean, private val context: Context) {
         _isUsingFirebaseStateFlow.value = isUsing
     }
 
+    fun saveAdminClaim(adminClaim: Boolean) {
+        val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        sharedPreferences.edit().putBoolean("is_using_firebase", adminClaim).apply()
+    }
+
+    fun getAdminClaim(): Boolean {
+        val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("adminClaim", false)
+    }
+
     private fun saveState(isUsing: Boolean) {
         val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
         sharedPreferences.edit().putBoolean("is_using_firebase", isUsing).apply()

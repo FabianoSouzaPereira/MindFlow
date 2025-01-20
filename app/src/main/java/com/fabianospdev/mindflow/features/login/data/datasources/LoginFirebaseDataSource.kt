@@ -1,5 +1,7 @@
 package com.fabianospdev.mindflow.features.login.data.datasources
 
+import android.util.Log
+import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.features.login.data.models.LoginRequestModel
 import com.fabianospdev.mindflow.features.login.data.models.LoginResponseModel
 import com.google.firebase.auth.FirebaseAuth
@@ -8,13 +10,29 @@ import retrofit2.Response
 import javax.inject.Inject
 
 class LoginFirebaseDataSource @Inject constructor(
+    private val appConfig: AppConfig,
     private val firebaseAuth: FirebaseAuth
 ) : LoginDataSource {
 
     override suspend fun login(request: LoginRequestModel): Response<LoginResponseModel> {
         return try {
+            val isAdminClaim: Boolean = false
             val result = firebaseAuth.signInWithEmailAndPassword(request.email, request.password).await()
-            val loginResponse = LoginResponseModel(result.user?.uid ?: "")
+
+            val idToken = result.user?.getIdToken(true)?.await()
+
+            idToken?.let {
+                val adminClaim = it.claims["admin"] as? Boolean
+                if (adminClaim == true) {
+                    Log.d("Auth", "User isn't admin")
+                } else {
+                    Log.d("Auth", "User is admin")
+                }
+
+                adminClaim?.let { it1 -> appConfig.saveAdminClaim(it1) }
+            }
+
+            val loginResponse = LoginResponseModel(result.user?.uid ?: "", isAdminClaim)
             Response.success(loginResponse)
         } catch (e: Exception) {
             Response.error(

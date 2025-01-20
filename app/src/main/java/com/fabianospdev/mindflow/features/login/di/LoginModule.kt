@@ -53,14 +53,17 @@ object LoginModule {
     @Provides
     @Singleton
     fun provideLoginRemoteDataSource(retrofit: Retrofit): LoginRemoteDataSource {
-        val loginDataSource  = retrofit.create(LoginDataSource ::class.java)
+        val loginDataSource = retrofit.create(LoginDataSource::class.java)
         return LoginRemoteDataSource(loginDataSource)
     }
 
     @Provides
     @Singleton
-    fun provideLoginFirebaseDataSource(firebaseAuth: FirebaseAuth): LoginFirebaseDataSource {
-        return LoginFirebaseDataSource(firebaseAuth)
+    fun provideLoginFirebaseDataSource(
+        appConfig: AppConfig,
+        firebaseAuth: FirebaseAuth
+    ): LoginFirebaseDataSource {
+        return LoginFirebaseDataSource(appConfig, firebaseAuth)
     }
 
     @Provides
@@ -68,7 +71,7 @@ object LoginModule {
         loginRemoteUsecase: LoginRemoteUseCase,
         retryController: RetryController,
         appConfig: AppConfig
-    ) : LoginViewModel {
+    ): LoginViewModel {
         return LoginViewModel(useCase = loginRemoteUsecase, retryController = retryController, appConfig = appConfig)
     }
 

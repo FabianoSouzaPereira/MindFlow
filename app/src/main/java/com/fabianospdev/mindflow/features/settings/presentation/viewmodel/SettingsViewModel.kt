@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.RetryController
 import com.fabianospdev.mindflow.core.helpers.exceptions.CommonError
-import com.fabianospdev.mindflow.features.settings.data.models.firebase.globalSettings.GlobalSettingsFirestoreModel
 import com.fabianospdev.mindflow.features.settings.data.models.relational.globalSettings.GlobalSettingsRelationalModel
+import com.fabianospdev.mindflow.features.settings.domain.entities.globalSettings.GlobalSettingsEntity
 import com.fabianospdev.mindflow.features.settings.domain.usecases.SettingsRemoteUseCase
 import com.fabianospdev.mindflow.features.settings.presentation.ui.settings.SettingsError
 import com.fabianospdev.mindflow.features.settings.presentation.ui.settings.states.SettingsState
@@ -80,7 +80,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun setSettings(configuration: GlobalSettingsFirestoreModel) {
+    fun setSettings(configuration: GlobalSettingsEntity) {
 
         if (!retryController.isRetryEnabled.value) {
             _showRetryLimitReached.value = true
@@ -158,6 +158,9 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun setIdleState() {
+        _state.value = SettingsState.SettingsIdle
+    }
 
     fun toggleFirebaseUsage() {
         appConfig.setUsingFirebase(!isUsingFirebase.value)

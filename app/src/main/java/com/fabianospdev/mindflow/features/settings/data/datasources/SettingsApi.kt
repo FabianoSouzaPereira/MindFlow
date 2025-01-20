@@ -8,7 +8,7 @@ import retrofit2.http.POST
 
 interface SettingsApi {
     @GET("settings")
-    suspend fun getSettings(): GlobalSettingsRelationalModel?
+    suspend fun getSettings(): GlobalSettingsRelationalModel
 
     @POST("settings")
     suspend fun setSettings(@Body model: GlobalSettingsRelationalModel): SettingsResponseModel

@@ -16,6 +16,7 @@ import com.fabianospdev.mindflow.R
 import com.fabianospdev.mindflow.features.settings.data.models.firebase.globalSettings.GlobalSettingsFirestoreModel
 import com.fabianospdev.mindflow.features.settings.data.models.relational.globalSettings.GlobalSettingsRelationalModel
 import com.fabianospdev.mindflow.features.settings.presentation.viewmodel.SettingsViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 internal fun ShowSettingsIdle(
@@ -33,10 +34,10 @@ internal fun ShowSettingsIdle(
         if (isUsingFirebase) {
             val settings = GlobalSettingsFirestoreModel(
                 maintenanceMode = true,
-                defaultLanguage = "Portuguese",
+                defaultLanguage = "Portuguese2",
                 privacyPolicyURL = "http://teste.comURL",
                 termsOfServiceURL = "http://termsURL",
-                appVersion = "1.0.0",
+                appVersion = "1.0.1",
                 featureToggle = true,
                 supportContactEmail = "support@email.com",
                 defaultTimezone = "EN",
@@ -45,7 +46,15 @@ internal fun ShowSettingsIdle(
                 chatEnabled = false,
                 darkMode = false
             )
-            Button(onClick = { viewModel.setSettings(settings) }) { }
+            Button(onClick = {
+                val currentUser = FirebaseAuth.getInstance().currentUser
+                if (currentUser != null) {
+                    viewModel.setSettings(settings)
+                }
+
+            }) {
+                Text("SetSettings")
+            }
         } else {
             val settings = GlobalSettingsRelationalModel(
                 maintenanceMode = true,
@@ -61,9 +70,9 @@ internal fun ShowSettingsIdle(
                 chatEnabled = false,
                 darkMode = false
             )
-            Button(onClick = { viewModel.setSettings(settings) }) { }
+            Button(onClick = { viewModel.setSettings(settings) }) {
+                Text("SetSettings")
+            }
         }
-
-
     }
 }
