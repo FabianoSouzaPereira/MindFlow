@@ -1,7 +1,7 @@
 package com.fabianospdev.mindflow.features.user_profile.domain.entities
 
-import java.time.LocalDate
-import java.time.LocalDateTime
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 
 interface ProfileEntity {
     val id: Long

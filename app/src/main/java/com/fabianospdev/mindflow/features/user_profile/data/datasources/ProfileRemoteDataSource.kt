@@ -1,11 +1,13 @@
 package com.fabianospdev.mindflow.features.user_profile.data.datasources
 
 import com.fabianospdev.mindflow.features.user_profile.data.model.ProfileFirestoreModel
+import com.fabianospdev.mindflow.features.user_profile.data.model.ProfileRelationalModel
+import com.fabianospdev.mindflow.features.user_profile.data.model.ProfileResponseEntity
 import javax.inject.Inject
 
 class ProfileRemoteDataSource @Inject constructor(
     private val retrofitService: ProfileDataSource
-) : ProfileDataSource {
+) : ProfileDataSource() {
 
     override suspend fun getProfileContent(): ProfileFirestoreModel {
         try {
@@ -16,7 +18,12 @@ class ProfileRemoteDataSource @Inject constructor(
         }
     }
 
-    override suspend fun setProfileContent(model: ProfileFirestoreModel): ProfileFirestoreModel {
-        TODO("Not yet implemented")
+    override suspend fun setProfileContent(model: ProfileRelationalModel): ProfileResponseEntity {
+        try {
+
+            return retrofitService.setProfileContent(model = model)
+        } catch (e: Exception) {
+            throw Throwable("Authentication error: ${e.message}", e)
+        }
     }
 }

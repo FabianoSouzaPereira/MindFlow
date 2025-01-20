@@ -1,5 +1,6 @@
 package com.fabianospdev.mindflow.features.settings.di
 
+import com.fabianospdev.mindflow.core.di.CoreModule
 import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.RetryController
 import com.fabianospdev.mindflow.features.settings.data.datasources.SettingsDataSource
@@ -10,10 +11,12 @@ import com.fabianospdev.mindflow.features.settings.domain.repositories.SettingsR
 import com.fabianospdev.mindflow.features.settings.domain.usecases.SettingsRemoteUseCase
 import com.fabianospdev.mindflow.features.settings.domain.usecases.SettingsRemoteUseCaseImpl
 import com.fabianospdev.mindflow.features.settings.presentation.viewmodel.SettingsViewModel
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import retrofit2.Retrofit
 import javax.inject.Singleton
 
 @Module
@@ -49,7 +52,21 @@ object SettingsModule {
         settingsRemoteUseCase: SettingsRemoteUseCase,
         retryController: RetryController,
         appConfig: AppConfig
-    ) : SettingsViewModel {
+    ): SettingsViewModel {
         return SettingsViewModel(useCase = settingsRemoteUseCase, retryController = retryController, appConfig = appConfig)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSettingsRemoteDataSource(retrofit: Retrofit): SettingsRemoteDataSource {
+        val settingsDataSource = retrofit.create(SettingsDataSource::class.java)
+        return SettingsRemoteDataSource(settingsDataSource)
+    }
+
+    @Provides
+    @Singleton
+    @CoreModule.FirebaseSource
+    fun provideSettingsFirebaseDataSource(firebaseFirestore: FirebaseFirestore): SettingsFirebaseDataSource {
+        return SettingsFirebaseDataSource(firebaseFirestore)
     }
 }

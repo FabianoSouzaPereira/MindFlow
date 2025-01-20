@@ -5,5 +5,5 @@ import com.fabianospdev.mindflow.features.user_profile.domain.entities.ProfileEn
 
 interface ProfileRemoteRepository {
     suspend fun getProfileContent(): Result<ProfileEntity>
-    suspend fun setProfileContent(model: ProfileEntity): ProfileResponseEntity
+    suspend fun setProfileContent(model: ProfileEntity): Result<ProfileResponseEntity>
 }

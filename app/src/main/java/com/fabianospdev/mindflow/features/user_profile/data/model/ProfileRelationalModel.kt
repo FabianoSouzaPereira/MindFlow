@@ -1,10 +1,13 @@
 package com.fabianospdev.mindflow.features.user_profile.data.model
 
 import com.fabianospdev.mindflow.features.user_profile.domain.entities.ProfileEntity
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 @Serializable
 data class ProfileRelationalModel(
@@ -30,7 +33,8 @@ data class ProfileRelationalModel(
 
     @SerialName("socialLinks") override val socialLinks: Map<String, String> = emptyMap(),
 
-    @SerialName("lastUpdated") override val lastUpdated: LocalDateTime = LocalDateTime.now(),
+    @SerialName("lastUpdated") override val lastUpdated: LocalDateTime = Clock.System.now()
+        .toLocalDateTime(TimeZone.currentSystemDefault()),
 
     @SerialName("preferences") override val preferences: Map<String, String> = emptyMap(),
 

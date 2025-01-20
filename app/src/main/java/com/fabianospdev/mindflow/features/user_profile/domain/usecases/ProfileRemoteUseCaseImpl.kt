@@ -13,7 +13,7 @@ class ProfileRemoteUseCaseImpl @Inject constructor(
         return profileRemoteRepository.getProfileContent()
     }
 
-    override suspend fun setProfileContent(model: ProfileEntity): ProfileResponseEntity {
+    override suspend fun setProfileContent(model: ProfileEntity): Result<ProfileResponseEntity> {
         return profileRemoteRepository.setProfileContent(model = model)
     }
 }

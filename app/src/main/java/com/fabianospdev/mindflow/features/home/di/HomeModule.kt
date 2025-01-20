@@ -12,7 +12,7 @@ import com.fabianospdev.mindflow.features.home.domain.repositories.HomeRemoteRep
 import com.fabianospdev.mindflow.features.home.domain.usecases.HomeRemoteUseCase
 import com.fabianospdev.mindflow.features.home.domain.usecases.HomeRemoteUseCaseImpl
 import com.fabianospdev.mindflow.features.home.presentation.viewmodel.HomeViewModel
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -69,7 +69,7 @@ object HomeModule {
     @Provides
     @Singleton
     @CoreModule.FirebaseSource
-    fun provideHomeFirebaseDataSource(firebaseAuth: FirebaseAuth): HomeFirebaseDataSource {
-        return HomeFirebaseDataSource(firebaseAuth)
+    fun provideHomeFirebaseDataSource(firebaseFirestore: FirebaseFirestore): HomeFirebaseDataSource {
+        return HomeFirebaseDataSource(firebaseFirestore)
     }
 }

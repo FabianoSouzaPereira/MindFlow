@@ -2,30 +2,31 @@ package com.fabianospdev.mindflow.features.user_profile.data.datasources
 
 import android.util.Log
 import com.fabianospdev.mindflow.features.user_profile.data.model.ProfileFirestoreModel
+import com.fabianospdev.mindflow.features.user_profile.data.model.ProfileResponseEntity
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class ProfileFirebaseDataSource @Inject constructor(
     private val firestore: FirebaseFirestore
-) : ProfileDataSource {
+) : ProfileDataSource() {
 
     override suspend fun getProfileContent(): ProfileFirestoreModel {
         throw Throwable("Authentication error")
     }
 
-    override suspend fun setProfileContent(model: ProfileFirestoreModel): ProfileFirestoreModel {
+    override suspend fun setProfileContent(model: ProfileFirestoreModel): ProfileResponseEntity {
         return try {
-            val globalSettingsRef = firestore.collection("GlobalSettingsConfiguration").document("default")
+            val profileRef = firestore.collection("userProfile").document("default")
 
-            globalSettingsRef.set(testGlobalSettings)
-                .addOnSuccessListener {
-                    Log.d("Firestore", "Global settings added successfully")
-                }
-                .addOnFailureListener { e ->
-                    Log.w("Firestore", "Error adding global settings", e)
-                }
+            profileRef.set(model).await()
+
+            Log.d("Firestore", "Profile settings added successfully")
+            ProfileResponseEntity(success = true)
         } catch (e: Exception) {
-            Log.w("Firestore", "Error adding global settings", e)
+            Log.w("Firestore", "Error adding profile", e)
+            ProfileResponseEntity(success = false, message = e.message)
         }
     }
+
 }

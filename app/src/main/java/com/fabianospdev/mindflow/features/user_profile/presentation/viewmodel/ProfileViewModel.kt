@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.RetryController
 import com.fabianospdev.mindflow.core.helpers.exceptions.CommonError
+import com.fabianospdev.mindflow.features.user_profile.domain.entities.ProfileEntity
 import com.fabianospdev.mindflow.features.user_profile.domain.usecases.ProfileRemoteUseCase
 import com.fabianospdev.mindflow.features.user_profile.presentation.ui.profile.ProfileError
 import com.fabianospdev.mindflow.features.user_profile.presentation.ui.profile.states.ProfileState
@@ -72,6 +73,45 @@ class ProfileViewModel @Inject constructor(
                     )
 
                     else -> ProfileState.ProfileError(ProfileError.SectionNotAvailable.message)
+                }
+            }
+        }
+    }
+
+    fun setProfileContent(model: ProfileEntity) {
+
+        if (!retryController.isRetryEnabled.value) {
+            _showRetryLimitReached.value = true
+            return
+        }
+        _state.value = ProfileState.ProfileLoading
+
+        viewModelScope.launch {
+            try {
+                val result = useCase.setProfileContent(model = model)
+                if (result.isSuccess) {
+                    _state.value = ProfileState.ProfileSuccess(profileResponse = result.getOrThrow())
+                    retryController.resetRetryCount()
+                } else {
+                    retryController.incrementRetryCount()
+                    _state.value = ProfileState.ProfileError("Falha ao salvar as configurações.")
+                }
+            } catch (e: Exception) {
+                retryController.incrementRetryCount()
+                _state.value = when (e) {
+                    is com.fabianospdev.mindflow.core.helpers.exceptions.TimeoutException -> ProfileState.ProfileTimeoutError(
+                        CommonError.TimeoutError.message
+                    )
+
+                    is com.fabianospdev.mindflow.core.helpers.exceptions.UnauthorizedException -> ProfileState.ProfileUnauthorized(
+                        CommonError.Unauthorized.message
+                    )
+
+                    is com.fabianospdev.mindflow.core.helpers.exceptions.ValidationException -> ProfileState.ProfileValidationError(
+                        CommonError.ValidationError.message
+                    )
+
+                    else -> ProfileState.ProfileError("Erro inesperado ao salvar o perfil.")
                 }
             }
         }

@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.androidx.security.crypto.ktx)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.datetime)
     ksp(libs.dagger.hilt.compiler)
     ksp(libs.hilt.viewmodel.compiler)
     implementation(libs.hilt.navigation.compose)

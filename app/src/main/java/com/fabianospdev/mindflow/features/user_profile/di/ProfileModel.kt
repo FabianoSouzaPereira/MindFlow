@@ -1,6 +1,5 @@
 package com.fabianospdev.mindflow.features.user_profile.di
 
-import android.content.Context
 import com.fabianospdev.mindflow.core.di.CoreModule
 import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.RetryController
@@ -12,11 +11,10 @@ import com.fabianospdev.mindflow.features.user_profile.domain.repositories.Profi
 import com.fabianospdev.mindflow.features.user_profile.domain.usecases.ProfileRemoteUseCase
 import com.fabianospdev.mindflow.features.user_profile.domain.usecases.ProfileRemoteUseCaseImpl
 import com.fabianospdev.mindflow.features.user_profile.presentation.viewmodel.ProfileViewModel
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import javax.inject.Singleton
@@ -37,10 +35,9 @@ object ProfileModel {
 
     @Provides
     fun provideProfileRepository(
-        remoteDataSource: ProfileDataSource,
-        @ApplicationContext context: Context
+        remoteDataSource: ProfileDataSource
     ): ProfileRemoteRepository {
-        return ProfileRemoteRepositoryImpl(remoteDataSource, context)
+        return ProfileRemoteRepositoryImpl(remoteDataSource)
     }
 
     @Provides
@@ -69,7 +66,7 @@ object ProfileModel {
     @Provides
     @Singleton
     @CoreModule.FirebaseSource
-    fun provideProfileFirebaseDataSource(firebaseAuth: FirebaseAuth): ProfileFirebaseDataSource {
-        return ProfileFirebaseDataSource(firebaseAuth)
+    fun provideProfileFirebaseDataSource(firebaseFirestore: FirebaseFirestore): ProfileFirebaseDataSource {
+        return ProfileFirebaseDataSource(firebaseFirestore)
     }
 }

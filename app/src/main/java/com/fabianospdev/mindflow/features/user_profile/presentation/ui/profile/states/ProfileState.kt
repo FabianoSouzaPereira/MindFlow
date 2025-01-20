@@ -1,5 +1,6 @@
 package com.fabianospdev.mindflow.features.user_profile.presentation.ui.profile.states
 
+import com.fabianospdev.mindflow.features.user_profile.data.model.ProfileResponseEntity
 import com.fabianospdev.mindflow.features.user_profile.domain.entities.ProfileEntity
 
 sealed class ProfileState {
@@ -7,7 +8,10 @@ sealed class ProfileState {
 
     object ProfileIdle : ProfileState()
 
-    data class ProfileSuccess(val response: ProfileEntity) : ProfileState()
+    data class ProfileSuccess(
+        val profile: ProfileEntity? = null,
+        val profileResponse: ProfileResponseEntity? = null
+    ) : ProfileState()
 
     data class ProfileError(val error: String) : ProfileState() {
         fun isNetworkRelated(): Boolean {

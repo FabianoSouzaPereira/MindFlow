@@ -22,7 +22,7 @@ class ProfileRemoteRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun setProfileContent(model: ProfileEntity): ProfileResponseEntity {
+    override suspend fun setProfileContent(model: ProfileEntity): Result<ProfileResponseEntity> {
         return try {
             val response = when (model) {
                 is ProfileFirestoreModel -> {
@@ -35,7 +35,9 @@ class ProfileRemoteRepositoryImpl @Inject constructor(
                     Result.success(response as ProfileResponseEntity)
                 }
 
-                else -> throw IllegalArgumentException("Invalid model type")
+                else -> {
+                    throw IllegalArgumentException("Invalid model type")
+                }
             }
             Result.success(response as ProfileResponseEntity)
         } catch (e: Throwable) {
