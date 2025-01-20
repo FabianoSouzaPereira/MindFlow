@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.RetryController
 import com.fabianospdev.mindflow.core.helpers.exceptions.CommonError
+import com.fabianospdev.mindflow.features.settings.data.models.firebase.globalSettings.GlobalSettingsFirestoreModel
 import com.fabianospdev.mindflow.features.settings.data.models.relational.globalSettings.GlobalSettingsRelationalModel
 import com.fabianospdev.mindflow.features.settings.domain.entities.globalSettings.GlobalSettingsEntity
 import com.fabianospdev.mindflow.features.settings.domain.usecases.SettingsRemoteUseCase
@@ -30,6 +31,49 @@ class SettingsViewModel @Inject constructor(
     private val _showRetryLimitReached = MutableStateFlow(false)
     val showRetryLimitReached: StateFlow<Boolean> get() = _showRetryLimitReached
     val isUsingFirebase: StateFlow<Boolean> = appConfig.isUsingFirebase
+
+    /** ShowSettingsIdle params **/
+
+    private val _maintenanceMode = MutableStateFlow(false)
+    private val _defaultLanguage = MutableStateFlow("")
+    private val _privacyPolicyURL = MutableStateFlow("")
+    private val _termsOfServiceURL = MutableStateFlow("")
+    private val _appVersion = MutableStateFlow("")
+    private val _featureToggle = MutableStateFlow(false)
+    private val _supportContactEmail = MutableStateFlow("")
+    private val _defaultTimezone = MutableStateFlow("")
+    private val _maxUploadSize = MutableStateFlow(6565665L)
+    private val _analyticsEnabled = MutableStateFlow(false)
+    private val _chatEnabled = MutableStateFlow(false)
+    private val _darkMode = MutableStateFlow(false)
+
+    val maintenanceMode: StateFlow<Boolean> get() = _maintenanceMode
+    val defaultLanguage: StateFlow<String> get() = _defaultLanguage
+    val privacyPolicyURL: StateFlow<String> get() = _privacyPolicyURL
+    val termsOfServiceURL: StateFlow<String> get() = _termsOfServiceURL
+    val appVersion: StateFlow<String> get() = _appVersion
+    val featureToggle: StateFlow<Boolean> get() = _featureToggle
+    val supportContactEmail: StateFlow<String> get() = _supportContactEmail
+    val defaultTimezone: StateFlow<String> get() = _defaultTimezone
+    val maxUploadSize: StateFlow<Long> get() = _maxUploadSize
+    val analyticsEnabled: StateFlow<Boolean> get() = _analyticsEnabled
+    val chatEnabled: StateFlow<Boolean> get() = _chatEnabled
+    val darkMode: StateFlow<Boolean> get() = _darkMode
+
+    val globalSettings = GlobalSettingsFirestoreModel(
+        maintenanceMode = maintenanceMode.value,
+        defaultLanguage = defaultLanguage.value,
+        privacyPolicyURL = privacyPolicyURL.value,
+        termsOfServiceURL = termsOfServiceURL.value,
+        appVersion = appVersion.value,
+        featureToggle = featureToggle.value,
+        supportContactEmail = supportContactEmail.value,
+        defaultTimezone = defaultTimezone.value,
+        maxUploadSize = maxUploadSize.value,
+        analyticsEnabled = analyticsEnabled.value,
+        chatEnabled = chatEnabled.value,
+        darkMode = darkMode.value
+    )
 
 
     fun getSettings() {
@@ -164,6 +208,22 @@ class SettingsViewModel @Inject constructor(
 
     fun toggleFirebaseUsage() {
         appConfig.setUsingFirebase(!isUsingFirebase.value)
+    }
+
+    fun setMaintenanceMode() {
+        _maintenanceMode.value = !_maintenanceMode.value
+    }
+
+    fun setAnalyticsEnabled() {
+        _analyticsEnabled.value = !_analyticsEnabled.value
+    }
+
+    fun setChatEnabled() {
+        _chatEnabled.value = !_chatEnabled.value
+    }
+
+    fun setDarkMode() {
+        _darkMode.value = !_darkMode.value
     }
 
     fun resetRetryLimitNotification() {

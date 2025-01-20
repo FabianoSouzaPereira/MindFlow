@@ -1,12 +1,30 @@
 package com.fabianospdev.mindflow.features.settings.presentation.ui.settings
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowInsetsCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.fabianospdev.mindflow.features.home.presentation.ui.home.components.Drawer
+import com.fabianospdev.mindflow.features.home.presentation.ui.home.components.HomeCenterAlignedTopAppBar
+import com.fabianospdev.mindflow.features.settings.data.models.firebase.globalSettings.GlobalSettingsFirestoreModel
 import com.fabianospdev.mindflow.features.settings.presentation.ui.settings.components.ShowSettingsError
 import com.fabianospdev.mindflow.features.settings.presentation.ui.settings.components.ShowSettingsIdle
 import com.fabianospdev.mindflow.features.settings.presentation.ui.settings.components.ShowSettingsLoading
@@ -18,6 +36,7 @@ import com.fabianospdev.mindflow.features.settings.presentation.ui.settings.comp
 import com.fabianospdev.mindflow.features.settings.presentation.ui.settings.components.ShowSettingsValidationError
 import com.fabianospdev.mindflow.features.settings.presentation.ui.settings.states.SettingsState
 import com.fabianospdev.mindflow.features.settings.presentation.viewmodel.SettingsViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsScreen(
@@ -30,41 +49,102 @@ fun SettingsScreen(
     /** Observing the ViewModel state **/
     val isUsingFirebase by viewModel.isUsingFirebase.collectAsState()
 
-    when (state) {
-        is SettingsState.SettingsLoading -> {
-            ShowSettingsLoading()
+    val globalSettings by remember {
+        derivedStateOf {
+            GlobalSettingsFirestoreModel(
+                maintenanceMode = viewModel.maintenanceMode.value,
+                defaultLanguage = viewModel.defaultLanguage.value,
+                privacyPolicyURL = viewModel.privacyPolicyURL.value,
+                termsOfServiceURL = viewModel.termsOfServiceURL.value,
+                appVersion = viewModel.appVersion.value,
+                featureToggle = viewModel.featureToggle.value,
+                supportContactEmail = viewModel.supportContactEmail.value,
+                defaultTimezone = viewModel.defaultTimezone.value,
+                maxUploadSize = viewModel.maxUploadSize.value,
+                analyticsEnabled = viewModel.analyticsEnabled.value,
+                chatEnabled = viewModel.chatEnabled.value,
+                darkMode = viewModel.darkMode.value
+            )
         }
+    }
 
-        is SettingsState.SettingsIdle -> {
-            ShowSettingsIdle(isUsingFirebase, viewModel)
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+
+    val view = LocalView.current
+    val insets = WindowInsetsCompat.toWindowInsetsCompat(view.rootWindowInsets)
+    val statusBarHeight = with(LocalDensity.current) {
+        insets.getInsets(WindowInsetsCompat.Type.statusBars()).top.toDp()
+    }
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            Drawer(navController, statusBarHeight)
         }
+    ) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                HomeCenterAlignedTopAppBar(
+                    navController = navController,
+                    onMenuClick = {
+                        scope.launch {
+                            drawerState.open()
+                        }
+                    }
+                )
+            },
+            containerColor = Color.Transparent,
+            contentColor = Color.Transparent
+        ) { paddingValues ->
 
-        is SettingsState.SettingsSuccess -> {
-            ShowSettingsSuccess(viewModel)
-        }
+            when (state) {
+                is SettingsState.SettingsLoading -> {
+                    ShowSettingsLoading()
+                }
 
-        is SettingsState.SettingsError -> {
-            ShowSettingsError()
-        }
+                is SettingsState.SettingsIdle -> { //todo ver se precisa de it nos toggles mesmo ou nao
+                    ShowSettingsIdle(
+                        globalSettings = globalSettings,
+                        paddingValues = PaddingValues(16.dp),
+                        isUsingFirebase = isUsingFirebase,
+                        onToggleMaintenanceMode = { viewModel.setMaintenanceMode() },
+                        onToggleFirebaseMode = { viewModel.toggleFirebaseUsage() },
+                        onToggleAnalyticsEnabled = { viewModel.setAnalyticsEnabled() },
+                        onToggleChatEnabled = { viewModel.setChatEnabled() },
+                        onToggleDarkMode = { viewModel.setDarkMode() }
+                    )
+                }
 
-        is SettingsState.SettingsNoConnection -> {
-            ShowSettingsNoConnection()
-        }
+                is SettingsState.SettingsSuccess -> {
+                    ShowSettingsSuccess(setIdleState = { viewModel.setIdleState() })
+                }
 
-        is SettingsState.SettingsTimeoutError -> {
-            ShowSettingsTimeoutError()
-        }
+                is SettingsState.SettingsError -> {
+                    ShowSettingsError()
+                }
 
-        is SettingsState.SettingsUnauthorized -> {
-            ShowSettingsUnauthorized()
-        }
+                is SettingsState.SettingsNoConnection -> {
+                    ShowSettingsNoConnection()
+                }
 
-        is SettingsState.SettingsValidationError -> {
-            ShowSettingsValidationError()
-        }
+                is SettingsState.SettingsTimeoutError -> {
+                    ShowSettingsTimeoutError()
+                }
 
-        else -> {
-            ShowSettingsUnknown()
+                is SettingsState.SettingsUnauthorized -> {
+                    ShowSettingsUnauthorized()
+                }
+
+                is SettingsState.SettingsValidationError -> {
+                    ShowSettingsValidationError()
+                }
+
+                else -> {
+                    ShowSettingsUnknown()
+                }
+            }
         }
     }
 }

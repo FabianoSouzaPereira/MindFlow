@@ -9,14 +9,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.fabianospdev.mindflow.features.settings.presentation.viewmodel.SettingsViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-internal fun ShowSettingsSuccess(viewModel: SettingsViewModel) {
+internal fun ShowSettingsSuccess(setIdleState: () -> Unit) {
     LaunchedEffect(Unit) {
         delay(2000)
-        viewModel.setIdleState()
+        setIdleState.invoke()
     }
 
     Box(
@@ -26,6 +25,5 @@ internal fun ShowSettingsSuccess(viewModel: SettingsViewModel) {
         contentAlignment = Alignment.Center
     ) {
         Text("SettingsSuccess")
-
     }
 }
