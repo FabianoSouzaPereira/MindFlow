@@ -9,9 +9,9 @@ import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class SettingsFirebaseDataSource @Inject constructor(
+class SettingsFirebaseDataSourceImpl @Inject constructor(
     private val firestore: FirebaseFirestore
-) : SettingsDataSource() {
+) : SettingsDataSource {
 
     override suspend fun getSettings(): GlobalSettingsRelationalModel? {
         return try {

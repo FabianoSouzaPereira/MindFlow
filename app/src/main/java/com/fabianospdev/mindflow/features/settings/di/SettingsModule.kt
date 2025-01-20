@@ -3,9 +3,10 @@ package com.fabianospdev.mindflow.features.settings.di
 import com.fabianospdev.mindflow.core.di.CoreModule
 import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.RetryController
+import com.fabianospdev.mindflow.features.settings.data.datasources.SettingsApi
 import com.fabianospdev.mindflow.features.settings.data.datasources.SettingsDataSource
-import com.fabianospdev.mindflow.features.settings.data.datasources.SettingsFirebaseDataSource
-import com.fabianospdev.mindflow.features.settings.data.datasources.SettingsRemoteDataSource
+import com.fabianospdev.mindflow.features.settings.data.datasources.SettingsFirebaseDataSourceImpl
+import com.fabianospdev.mindflow.features.settings.data.datasources.SettingsRemoteDataSourceImpl
 import com.fabianospdev.mindflow.features.settings.data.repositories.SettingsRemoteRepositoryImpl
 import com.fabianospdev.mindflow.features.settings.domain.repositories.SettingsRemoteRepository
 import com.fabianospdev.mindflow.features.settings.domain.usecases.SettingsRemoteUseCase
@@ -27,17 +28,26 @@ object SettingsModule {
     @Singleton
     fun provideSettingsDataSource(
         appConfig: AppConfig,
-        retrofitDataSource: SettingsRemoteDataSource,
-        firebaseDataSource: SettingsFirebaseDataSource
+        retrofitDataSource: SettingsRemoteDataSourceImpl
+    ): SettingsApi {
+        return SettingsRemoteDataSourceImpl(retrofitDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSettingsApiDataSource(
+        appConfig: AppConfig,
+        firestore: FirebaseFirestore
     ): SettingsDataSource {
-        return if (appConfig.isUsingFirebase.value) firebaseDataSource else retrofitDataSource
+        return SettingsFirebaseDataSourceImpl(firestore)
     }
 
     @Provides
     fun provideSettingsRepository(
-        remoteDataSource: SettingsRemoteDataSource
+        settingsApi: SettingsApi,
+        remoteDataSource: SettingsDataSource
     ): SettingsRemoteRepository {
-        return SettingsRemoteRepositoryImpl(remoteDataSource)
+        return SettingsRemoteRepositoryImpl(settingsApi, remoteDataSource)
     }
 
     @Provides
@@ -58,15 +68,15 @@ object SettingsModule {
 
     @Provides
     @Singleton
-    fun provideSettingsRemoteDataSource(retrofit: Retrofit): SettingsRemoteDataSource {
-        val settingsDataSource = retrofit.create(SettingsDataSource::class.java)
-        return SettingsRemoteDataSource(settingsDataSource)
+    fun provideSettingsRemoteDataSource(retrofit: Retrofit): SettingsRemoteDataSourceImpl {
+        val settingsApi = retrofit.create(SettingsApi::class.java)
+        return SettingsRemoteDataSourceImpl(settingsApi)
     }
 
     @Provides
     @Singleton
     @CoreModule.FirebaseSource
-    fun provideSettingsFirebaseDataSource(firebaseFirestore: FirebaseFirestore): SettingsFirebaseDataSource {
-        return SettingsFirebaseDataSource(firebaseFirestore)
+    fun provideSettingsFirebaseDataSource(firebaseFirestore: FirebaseFirestore): SettingsFirebaseDataSourceImpl {
+        return SettingsFirebaseDataSourceImpl(firebaseFirestore)
     }
 }

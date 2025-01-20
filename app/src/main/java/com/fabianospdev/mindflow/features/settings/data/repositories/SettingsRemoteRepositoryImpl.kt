@@ -1,5 +1,6 @@
 package com.fabianospdev.mindflow.features.settings.data.repositories
 
+import com.fabianospdev.mindflow.features.settings.data.datasources.SettingsApi
 import com.fabianospdev.mindflow.features.settings.data.datasources.SettingsDataSource
 import com.fabianospdev.mindflow.features.settings.data.models.firebase.globalSettings.GlobalSettingsFirestoreModel
 import com.fabianospdev.mindflow.features.settings.data.models.relational.globalSettings.GlobalSettingsRelationalModel
@@ -9,6 +10,7 @@ import com.fabianospdev.mindflow.features.settings.domain.repositories.SettingsR
 import javax.inject.Inject
 
 class SettingsRemoteRepositoryImpl @Inject constructor(
+    private val settingsApi: SettingsApi,
     private val settingsDataSource: SettingsDataSource
 ) : SettingsRemoteRepository {
     override suspend fun getSettings(): Result<GlobalSettingsEntity> {
@@ -25,7 +27,7 @@ class SettingsRemoteRepositoryImpl @Inject constructor(
         return try {
             val response = when (model) {
                 is GlobalSettingsRelationalModel -> {
-                    val response = settingsDataSource.setSettings(model)
+                    val response = settingsApi.setSettings(model)
                     Result.success(response as SettingsResponseEntity)
                 }
 
