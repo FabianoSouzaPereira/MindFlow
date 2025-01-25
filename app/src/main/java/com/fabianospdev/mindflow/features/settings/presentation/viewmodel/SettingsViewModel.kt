@@ -1,5 +1,6 @@
 package com.fabianospdev.mindflow.features.settings.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,9 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.RetryController
 import com.fabianospdev.mindflow.core.helpers.exceptions.CommonError
-import com.fabianospdev.mindflow.features.settings.data.models.firebase.globalSettings.GlobalSettingsFirestoreModel
-import com.fabianospdev.mindflow.features.settings.data.models.relational.globalSettings.GlobalSettingsRelationalModel
 import com.fabianospdev.mindflow.features.settings.domain.entities.globalSettings.GlobalSettingsEntity
+import com.fabianospdev.mindflow.features.settings.domain.entities.globalSettings.copy
 import com.fabianospdev.mindflow.features.settings.domain.usecases.SettingsRemoteUseCase
 import com.fabianospdev.mindflow.features.settings.presentation.ui.settings.SettingsError
 import com.fabianospdev.mindflow.features.settings.presentation.ui.settings.states.SettingsState
@@ -25,15 +25,17 @@ class SettingsViewModel @Inject constructor(
     private val retryController: RetryController,
     private val appConfig: AppConfig
 ) : ViewModel() {
-    private val _state = MutableLiveData<SettingsState>(SettingsState.SettingsIdle)
+    val log = Log.d("Firebase", "**  VIEW MODEL  **")
+
+    private val _state = MutableLiveData<SettingsState>(SettingsState.SettingsLoading)
     val state: LiveData<SettingsState> get() = _state
 
     private val _showRetryLimitReached = MutableStateFlow(false)
     val showRetryLimitReached: StateFlow<Boolean> get() = _showRetryLimitReached
+
     val isUsingFirebase: StateFlow<Boolean> = appConfig.isUsingFirebase
 
     /** ShowSettingsIdle params **/
-
     private val _maintenanceMode = MutableStateFlow(false)
     private val _defaultLanguage = MutableStateFlow("")
     private val _privacyPolicyURL = MutableStateFlow("")
@@ -42,10 +44,11 @@ class SettingsViewModel @Inject constructor(
     private val _featureToggle = MutableStateFlow(false)
     private val _supportContactEmail = MutableStateFlow("")
     private val _defaultTimezone = MutableStateFlow("")
-    private val _maxUploadSize = MutableStateFlow(6565665L)
+    private val _maxUploadSize = MutableStateFlow(0L)
     private val _analyticsEnabled = MutableStateFlow(false)
     private val _chatEnabled = MutableStateFlow(false)
     private val _darkMode = MutableStateFlow(false)
+
 
     val maintenanceMode: StateFlow<Boolean> get() = _maintenanceMode
     val defaultLanguage: StateFlow<String> get() = _defaultLanguage
@@ -60,20 +63,9 @@ class SettingsViewModel @Inject constructor(
     val chatEnabled: StateFlow<Boolean> get() = _chatEnabled
     val darkMode: StateFlow<Boolean> get() = _darkMode
 
-    val globalSettings = GlobalSettingsFirestoreModel(
-        maintenanceMode = maintenanceMode.value,
-        defaultLanguage = defaultLanguage.value,
-        privacyPolicyURL = privacyPolicyURL.value,
-        termsOfServiceURL = termsOfServiceURL.value,
-        appVersion = appVersion.value,
-        featureToggle = featureToggle.value,
-        supportContactEmail = supportContactEmail.value,
-        defaultTimezone = defaultTimezone.value,
-        maxUploadSize = maxUploadSize.value,
-        analyticsEnabled = analyticsEnabled.value,
-        chatEnabled = chatEnabled.value,
-        darkMode = darkMode.value
-    )
+
+    private val _globalSettings = MutableStateFlow<GlobalSettingsEntity?>(null)
+    val globalSettings: StateFlow<GlobalSettingsEntity?> = _globalSettings
 
 
     fun getSettings() {
@@ -81,15 +73,14 @@ class SettingsViewModel @Inject constructor(
             _showRetryLimitReached.value = true
             return
         }
-        _state.value = SettingsState.SettingsLoading
 
         viewModelScope.launch {
             try {
-
                 val result = useCase.getSettings()
                 if (result.isSuccess) {
                     result.getOrNull()?.let { entity ->
-                        _state.value = SettingsState.SettingsSuccess(entity = entity, null)
+                        _globalSettings.value = entity
+                        _state.value = SettingsState.SettingsSuccess(entity = entity)
                         retryController.resetRetryCount()
                     } ?: run {
                         _state.value = SettingsState.SettingsError("Resposta nula")
@@ -124,19 +115,18 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun setSettings(configuration: GlobalSettingsEntity) {
+    fun setSettings(content: GlobalSettingsEntity) {
 
         if (!retryController.isRetryEnabled.value) {
             _showRetryLimitReached.value = true
             return
         }
-        _state.value = SettingsState.SettingsLoading
 
         viewModelScope.launch {
             try {
-                val result = useCase.setSettings(model = configuration)
+                val result = useCase.setSettings(model = content)
                 if (result.isSuccess) {
-                    _state.value = SettingsState.SettingsSuccess(entity = null, response = result.getOrNull())
+                    _state.value = SettingsState.SettingsSuccess(response = result.getOrNull())
                     retryController.resetRetryCount()
                 } else {
                     retryController.incrementRetryCount()
@@ -163,67 +153,39 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun setSettings(configuration: GlobalSettingsRelationalModel) {
-
-        if (!retryController.isRetryEnabled.value) {
-            _showRetryLimitReached.value = true
-            return
-        }
-        _state.value = SettingsState.SettingsLoading
-
-        viewModelScope.launch {
-            try {
-                val result = useCase.setSettings(model = configuration)
-                if (result.isSuccess) {
-                    _state.value = SettingsState.SettingsSuccess(entity = null, response = result.getOrNull())
-                    retryController.resetRetryCount()
-                } else {
-                    retryController.incrementRetryCount()
-                    _state.value = SettingsState.SettingsError("Falha ao salvar as configurações.")
-                }
-            } catch (e: Exception) {
-                retryController.incrementRetryCount()
-                _state.value = when (e) {
-                    is com.fabianospdev.mindflow.core.helpers.exceptions.TimeoutException -> SettingsState.SettingsTimeoutError(
-                        CommonError.TimeoutError.message
-                    )
-
-                    is com.fabianospdev.mindflow.core.helpers.exceptions.UnauthorizedException -> SettingsState.SettingsUnauthorized(
-                        CommonError.Unauthorized.message
-                    )
-
-                    is com.fabianospdev.mindflow.core.helpers.exceptions.ValidationException -> SettingsState.SettingsValidationError(
-                        CommonError.ValidationError.message
-                    )
-
-                    else -> SettingsState.SettingsError("Erro inesperado ao salvar as configurações.")
-                }
-            }
-        }
+    private fun updateSettings() {
+        globalSettings.value?.let { setSettings(it) }
+        getSettings()
     }
 
     fun setIdleState() {
-        _state.value = SettingsState.SettingsIdle
+        _state.value = SettingsState.SettingsIdle()
     }
 
-    fun toggleFirebaseUsage() {
-        appConfig.setUsingFirebase(!isUsingFirebase.value)
+    fun toggleFirebaseUsage(enabled: Boolean) {
+        //  appConfig.setUsingFirebase(enabled)
+        _globalSettings.value = _globalSettings.value?.copy(featureToggle = enabled)
+        updateSettings()
     }
 
-    fun setMaintenanceMode() {
-        _maintenanceMode.value = !_maintenanceMode.value
+    fun setMaintenanceMode(enabled: Boolean) {
+        _globalSettings.value = _globalSettings.value?.copy(maintenanceMode = enabled)
+        updateSettings()
     }
 
-    fun setAnalyticsEnabled() {
-        _analyticsEnabled.value = !_analyticsEnabled.value
+    fun setAnalyticsEnabled(enabled: Boolean) {
+        _globalSettings.value = _globalSettings.value?.copy(analyticsEnabled = enabled)
+        updateSettings()
     }
 
-    fun setChatEnabled() {
-        _chatEnabled.value = !_chatEnabled.value
+    fun setChatEnabled(enabled: Boolean) {
+        _globalSettings.value = _globalSettings.value?.copy(chatEnabled = enabled)
+        updateSettings()
     }
 
-    fun setDarkMode() {
-        _darkMode.value = !_darkMode.value
+    fun setDarkMode(enabled: Boolean) {
+        _globalSettings.value = _globalSettings.value?.copy(darkMode = enabled)
+        updateSettings()
     }
 
     fun resetRetryLimitNotification() {
@@ -232,7 +194,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun resetState() {
-        _state.value = SettingsState.SettingsIdle
+        _state.value = SettingsState.SettingsIdle()
     }
 
     fun clearInputFields() {}

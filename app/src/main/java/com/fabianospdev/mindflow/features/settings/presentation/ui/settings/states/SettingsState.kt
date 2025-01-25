@@ -6,11 +6,14 @@ import com.fabianospdev.mindflow.features.settings.domain.entities.globalSetting
 sealed class SettingsState {
     object SettingsLoading : SettingsState()
 
-    object SettingsIdle : SettingsState()
+    data class SettingsIdle(
+        val entity: GlobalSettingsEntity? = null,
+        val response: SettingsResponseEntity? = null
+    ) : SettingsState()
 
     data class SettingsSuccess(
-        val entity: GlobalSettingsEntity?,
-        val response: SettingsResponseEntity?
+        val entity: GlobalSettingsEntity? = null,
+        val response: SettingsResponseEntity? = null,
     ) : SettingsState()
 
     data class SettingsError(val error: String) : SettingsState() {

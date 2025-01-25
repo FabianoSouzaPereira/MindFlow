@@ -1,6 +1,5 @@
 package com.fabianospdev.mindflow.features.settings.data.datasources
 
-import android.util.Log
 import com.fabianospdev.mindflow.features.settings.data.models.SettingsResponseModel
 import com.fabianospdev.mindflow.features.settings.data.models.firebase.globalSettings.GlobalSettingsFirestoreModel
 import com.google.firebase.firestore.FirebaseFirestore
@@ -31,15 +30,13 @@ class SettingsFirebaseDataSourceImpl @Inject constructor(
 
     override suspend fun setSettings(model: GlobalSettingsFirestoreModel): SettingsResponseModel {
         return try {
+
             val globalSettingsRef = firestore.collection("GlobalSettings").document("default")
             globalSettingsRef.set(model, SetOptions.merge()).await()
-
-            Log.d("Firestore", "Global settings added successfully")
 
             SettingsResponseModel(success = true)
 
         } catch (e: Exception) {
-            Log.w("Firestore", "Error adding global settings", e)
             SettingsResponseModel(success = false, message = e.message)
         }
     }
