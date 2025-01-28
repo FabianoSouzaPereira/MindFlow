@@ -1,6 +1,5 @@
 package com.fabianospdev.mindflow.features.settings.presentation.ui.settings
 
-import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.DrawerValue
@@ -50,11 +49,7 @@ fun SettingsScreen(
 
     /** Observing the ViewModel state **/
     val isUsingFirebase by viewModel.isUsingFirebase.collectAsState()
-
-
     val globalSettings = viewModel.globalSettings.collectAsState(initial = null).value
-    Log.d("Firebase", "val globalSettings = $globalSettings")
-
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -64,7 +59,6 @@ fun SettingsScreen(
     val statusBarHeight = with(LocalDensity.current) {
         insets.getInsets(WindowInsetsCompat.Type.statusBars()).top.toDp()
     }
-
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -96,8 +90,6 @@ fun SettingsScreen(
                 is SettingsState.SettingsIdle -> {}
 
                 is SettingsState.SettingsSuccess -> {
-                    Log.d("Firebase", "WHEN STATE is SUCCESS -> $globalSettings")
-
                     ShowSettingsSuccess(
                         globalSettings = globalSettings,
                         paddingValues = PaddingValues(16.dp),

@@ -1,6 +1,7 @@
 package com.fabianospdev.mindflow.features.profile.data.repositories
 
-import com.fabianospdev.mindflow.features.profile.data.datasources.ProfileDataSource
+import com.fabianospdev.mindflow.features.profile.data.datasources.ProfileFirebaseDataSource
+import com.fabianospdev.mindflow.features.profile.data.datasources.ProfileRemoteDataSource
 import com.fabianospdev.mindflow.features.profile.data.model.ProfileFirestoreModel
 import com.fabianospdev.mindflow.features.profile.data.model.ProfileRelationalModel
 import com.fabianospdev.mindflow.features.profile.data.model.ProfileResponseEntity
@@ -9,12 +10,13 @@ import com.fabianospdev.mindflow.features.profile.domain.repositories.ProfileRem
 import javax.inject.Inject
 
 class ProfileRemoteRepositoryImpl @Inject constructor(
-    private val profileDataSource: ProfileDataSource
+    private val profileFirebaseDataSource: ProfileFirebaseDataSource,
+    private val profileRemoteDataSource: ProfileRemoteDataSource
 ) : ProfileRemoteRepository {
 
     override suspend fun getProfileContent(): Result<ProfileEntity> {
         return try {
-            val response = profileDataSource.getProfileContent()
+            val response = profileFirebaseDataSource.getProfileContent()
             return Result.success(response as ProfileEntity)
 
         } catch (e: Throwable) {
@@ -22,16 +24,16 @@ class ProfileRemoteRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun setProfileContent(model: ProfileEntity): Result<ProfileResponseEntity> {
+    override suspend fun setProfileContent(model: ProfileEntity, userId: String): Result<ProfileResponseEntity> {
         return try {
             val response = when (model) {
                 is ProfileFirestoreModel -> {
-                    val response = profileDataSource.setProfileContent(model)
+                    val response = profileFirebaseDataSource.setProfileContent(model, userId)
                     Result.success(response as ProfileResponseEntity)
                 }
 
                 is ProfileRelationalModel -> {
-                    val response = profileDataSource.setProfileContent(model)
+                    val response = profileRemoteDataSource.setProfileContent(model, userId)
                     Result.success(response as ProfileResponseEntity)
                 }
 

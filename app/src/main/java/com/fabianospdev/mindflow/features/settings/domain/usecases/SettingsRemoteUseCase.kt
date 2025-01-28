@@ -5,5 +5,5 @@ import com.fabianospdev.mindflow.features.settings.domain.entities.globalSetting
 
 interface SettingsRemoteUseCase {
     suspend fun getSettings(): Result<GlobalSettingsEntity>
-    suspend fun setSettings(model: GlobalSettingsEntity): Result<SettingsResponseEntity>
+    suspend fun setSettings(model: GlobalSettingsEntity, userId: String): Result<SettingsResponseEntity>
 }

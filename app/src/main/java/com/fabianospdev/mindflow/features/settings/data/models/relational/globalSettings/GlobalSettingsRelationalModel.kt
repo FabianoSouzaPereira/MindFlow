@@ -6,6 +6,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class GlobalSettingsRelationalModel(
+    @SerialName("id")
+    override val id: Long,
+
     @SerialName("maintenanceMode")
     override val maintenanceMode: Boolean,
 
@@ -23,6 +26,9 @@ data class GlobalSettingsRelationalModel(
 
     @SerialName("featureToggle")
     override val featureToggle: Boolean,
+
+    @SerialName("serverAddress")
+    override val serverAddress: ServerAddressRelationalModel,
 
     @SerialName("supportContactEmail")
     override val supportContactEmail: String,

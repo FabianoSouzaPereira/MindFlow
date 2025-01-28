@@ -1,11 +1,12 @@
 package com.fabianospdev.mindflow.features.login.di
 
 import android.content.Context
+import com.fabianospdev.mindflow.core.database.dao.UserDao
 import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.RetryController
-import com.fabianospdev.mindflow.features.login.data.datasources.LoginDataSource
-import com.fabianospdev.mindflow.features.login.data.datasources.LoginFirebaseDataSource
-import com.fabianospdev.mindflow.features.login.data.datasources.LoginRemoteDataSource
+import com.fabianospdev.mindflow.features.login.data.datasources.remoto.LoginDataSource
+import com.fabianospdev.mindflow.features.login.data.datasources.remoto.LoginFirebaseDataSource
+import com.fabianospdev.mindflow.features.login.data.datasources.remoto.LoginRemoteDataSource
 import com.fabianospdev.mindflow.features.login.data.repositories.LoginRemoteRepositoryImpl
 import com.fabianospdev.mindflow.features.login.domain.repositories.LoginRemoteRepository
 import com.fabianospdev.mindflow.features.login.domain.usecases.LoginRemoteUseCase
@@ -38,9 +39,10 @@ object LoginModule {
     @Provides
     fun provideLoginRepository(
         dataSource: LoginDataSource,
+        userDao: UserDao,
         @ApplicationContext context: Context
     ): LoginRemoteRepository {
-        return LoginRemoteRepositoryImpl(dataSource, context)
+        return LoginRemoteRepositoryImpl(dataSource, userDao, context)
     }
 
     @Provides
@@ -74,5 +76,4 @@ object LoginModule {
     ): LoginViewModel {
         return LoginViewModel(useCase = loginRemoteUsecase, retryController = retryController, appConfig = appConfig)
     }
-
 }

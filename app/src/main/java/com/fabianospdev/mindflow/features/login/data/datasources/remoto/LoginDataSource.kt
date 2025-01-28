@@ -1,4 +1,4 @@
-package com.fabianospdev.mindflow.features.login.data.datasources
+package com.fabianospdev.mindflow.features.login.data.datasources.remoto
 
 import com.fabianospdev.mindflow.features.login.data.models.LoginRequestModel
 import com.fabianospdev.mindflow.features.login.data.models.LoginResponseModel

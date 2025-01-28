@@ -1,4 +1,4 @@
-package com.fabianospdev.mindflow.features.login.data.datasources
+package com.fabianospdev.mindflow.features.login.data.datasources.remoto
 
 import android.util.Log
 import com.fabianospdev.mindflow.core.helpers.AppConfig
@@ -32,7 +32,14 @@ class LoginFirebaseDataSource @Inject constructor(
                 adminClaim?.let { it1 -> appConfig.saveAdminClaim(it1) }
             }
 
-            val loginResponse = LoginResponseModel(result.user?.uid ?: "", isAdminClaim)
+            val loginResponse = LoginResponseModel(
+                token = idToken.toString(),
+                isAdminClaim,
+                result.user?.photoUrl,
+                result.user?.uid,
+                result.user?.isEmailVerified,
+                result.user?.displayName
+            )
             Response.success(loginResponse)
         } catch (e: Exception) {
             Response.error(

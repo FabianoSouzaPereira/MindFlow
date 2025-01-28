@@ -1,6 +1,5 @@
 package com.fabianospdev.mindflow.features.settings.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,11 +7,17 @@ import androidx.lifecycle.viewModelScope
 import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.RetryController
 import com.fabianospdev.mindflow.core.helpers.exceptions.CommonError
+import com.fabianospdev.mindflow.core.helpers.exceptions.TimeoutException
+import com.fabianospdev.mindflow.core.helpers.exceptions.UnauthorizedException
+import com.fabianospdev.mindflow.core.helpers.exceptions.UserNotFoundException
+import com.fabianospdev.mindflow.core.helpers.exceptions.ValidationException
 import com.fabianospdev.mindflow.features.settings.domain.entities.globalSettings.GlobalSettingsEntity
+import com.fabianospdev.mindflow.features.settings.domain.entities.globalSettings.ServerAddressEntity
 import com.fabianospdev.mindflow.features.settings.domain.entities.globalSettings.copy
 import com.fabianospdev.mindflow.features.settings.domain.usecases.SettingsRemoteUseCase
 import com.fabianospdev.mindflow.features.settings.presentation.ui.settings.SettingsError
 import com.fabianospdev.mindflow.features.settings.presentation.ui.settings.states.SettingsState
+import com.fabianospdev.mindflow.shared.utils.Shared
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +30,6 @@ class SettingsViewModel @Inject constructor(
     private val retryController: RetryController,
     private val appConfig: AppConfig
 ) : ViewModel() {
-    val log = Log.d("Firebase", "**  VIEW MODEL  **")
 
     private val _state = MutableLiveData<SettingsState>(SettingsState.SettingsLoading)
     val state: LiveData<SettingsState> get() = _state
@@ -34,14 +38,17 @@ class SettingsViewModel @Inject constructor(
     val showRetryLimitReached: StateFlow<Boolean> get() = _showRetryLimitReached
 
     val isUsingFirebase: StateFlow<Boolean> = appConfig.isUsingFirebase
+    val baseUrl: StateFlow<String> = appConfig.baseUrl
 
     /** ShowSettingsIdle params **/
+    private val _id = MutableStateFlow(0L)
     private val _maintenanceMode = MutableStateFlow(false)
     private val _defaultLanguage = MutableStateFlow("")
     private val _privacyPolicyURL = MutableStateFlow("")
     private val _termsOfServiceURL = MutableStateFlow("")
     private val _appVersion = MutableStateFlow("")
     private val _featureToggle = MutableStateFlow(false)
+    private val _serverAddress = MutableStateFlow<ServerAddressEntity?>(null)
     private val _supportContactEmail = MutableStateFlow("")
     private val _defaultTimezone = MutableStateFlow("")
     private val _maxUploadSize = MutableStateFlow(0L)
@@ -49,13 +56,14 @@ class SettingsViewModel @Inject constructor(
     private val _chatEnabled = MutableStateFlow(false)
     private val _darkMode = MutableStateFlow(false)
 
-
+    val id: StateFlow<Long> get() = _id
     val maintenanceMode: StateFlow<Boolean> get() = _maintenanceMode
     val defaultLanguage: StateFlow<String> get() = _defaultLanguage
     val privacyPolicyURL: StateFlow<String> get() = _privacyPolicyURL
     val termsOfServiceURL: StateFlow<String> get() = _termsOfServiceURL
     val appVersion: StateFlow<String> get() = _appVersion
     val featureToggle: StateFlow<Boolean> get() = _featureToggle
+    val serverAddress: StateFlow<ServerAddressEntity?> get() = _serverAddress
     val supportContactEmail: StateFlow<String> get() = _supportContactEmail
     val defaultTimezone: StateFlow<String> get() = _defaultTimezone
     val maxUploadSize: StateFlow<Long> get() = _maxUploadSize
@@ -63,17 +71,14 @@ class SettingsViewModel @Inject constructor(
     val chatEnabled: StateFlow<Boolean> get() = _chatEnabled
     val darkMode: StateFlow<Boolean> get() = _darkMode
 
-
     private val _globalSettings = MutableStateFlow<GlobalSettingsEntity?>(null)
     val globalSettings: StateFlow<GlobalSettingsEntity?> = _globalSettings
-
 
     fun getSettings() {
         if (!retryController.isRetryEnabled.value) {
             _showRetryLimitReached.value = true
             return
         }
-
         viewModelScope.launch {
             try {
                 val result = useCase.getSettings()
@@ -83,7 +88,7 @@ class SettingsViewModel @Inject constructor(
                         _state.value = SettingsState.SettingsSuccess(entity = entity)
                         retryController.resetRetryCount()
                     } ?: run {
-                        _state.value = SettingsState.SettingsError("Resposta nula")
+                        _state.value = SettingsState.SettingsError("Response null")
                     }
                 } else {
                     retryController.incrementRetryCount()
@@ -93,19 +98,19 @@ class SettingsViewModel @Inject constructor(
             } catch (e: Exception) {
                 retryController.incrementRetryCount()
                 _state.value = when (e) {
-                    is com.fabianospdev.mindflow.core.helpers.exceptions.UserNotFoundException -> SettingsState.SettingsError(
+                    is UserNotFoundException -> SettingsState.SettingsError(
                         SettingsError.DataLoadFailed.message
                     )
 
-                    is com.fabianospdev.mindflow.core.helpers.exceptions.TimeoutException -> SettingsState.SettingsTimeoutError(
+                    is TimeoutException -> SettingsState.SettingsTimeoutError(
                         CommonError.TimeoutError.message
                     )
 
-                    is com.fabianospdev.mindflow.core.helpers.exceptions.UnauthorizedException -> SettingsState.SettingsUnauthorized(
+                    is UnauthorizedException -> SettingsState.SettingsUnauthorized(
                         CommonError.Unauthorized.message
                     )
 
-                    is com.fabianospdev.mindflow.core.helpers.exceptions.ValidationException -> SettingsState.SettingsValidationError(
+                    is ValidationException -> SettingsState.SettingsValidationError(
                         CommonError.ValidationError.message
                     )
 
@@ -115,35 +120,34 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun setSettings(content: GlobalSettingsEntity) {
+    private fun setSettings(content: GlobalSettingsEntity, userId: String) {
 
         if (!retryController.isRetryEnabled.value) {
             _showRetryLimitReached.value = true
             return
         }
-
         viewModelScope.launch {
             try {
-                val result = useCase.setSettings(model = content)
+                val result = useCase.setSettings(model = content, userId = userId)
                 if (result.isSuccess) {
                     _state.value = SettingsState.SettingsSuccess(response = result.getOrNull())
                     retryController.resetRetryCount()
                 } else {
                     retryController.incrementRetryCount()
-                    _state.value = SettingsState.SettingsError("Falha ao salvar as configurações.")
+                    _state.value = SettingsState.SettingsError("Failed to save settings.")
                 }
             } catch (e: Exception) {
                 retryController.incrementRetryCount()
                 _state.value = when (e) {
-                    is com.fabianospdev.mindflow.core.helpers.exceptions.TimeoutException -> SettingsState.SettingsTimeoutError(
+                    is TimeoutException -> SettingsState.SettingsTimeoutError(
                         CommonError.TimeoutError.message
                     )
 
-                    is com.fabianospdev.mindflow.core.helpers.exceptions.UnauthorizedException -> SettingsState.SettingsUnauthorized(
+                    is UnauthorizedException -> SettingsState.SettingsUnauthorized(
                         CommonError.Unauthorized.message
                     )
 
-                    is com.fabianospdev.mindflow.core.helpers.exceptions.ValidationException -> SettingsState.SettingsValidationError(
+                    is ValidationException -> SettingsState.SettingsValidationError(
                         CommonError.ValidationError.message
                     )
 
@@ -154,7 +158,12 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun updateSettings() {
-        globalSettings.value?.let { setSettings(it) }
+        globalSettings.value?.let {
+            setSettings(
+                it,
+                userId = Shared.instance.userProfile.uid.toString()
+            )
+        }
         getSettings()
     }
 

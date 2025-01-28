@@ -31,7 +31,7 @@ class SettingsRemoteRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun setSettings(model: GlobalSettingsEntity): Result<SettingsResponseEntity> {
+    override suspend fun setSettings(model: GlobalSettingsEntity, userId: String): Result<SettingsResponseEntity> {
         return try {
             val response = when (model) {
                 is GlobalSettingsRelationalModel -> {
@@ -39,7 +39,7 @@ class SettingsRemoteRepositoryImpl @Inject constructor(
                 }
 
                 is GlobalSettingsFirestoreModel -> {
-                    settingsDataSource.setSettings(model)
+                    settingsDataSource.setSettings(model, userId)
                 }
 
                 else -> throw IllegalArgumentException("Invalid model type")

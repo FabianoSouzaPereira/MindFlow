@@ -1,9 +1,17 @@
 package com.fabianospdev.mindflow.core.di
 
 import android.content.Context
+import com.fabianospdev.mindflow.core.database.AppDatabase
+import com.fabianospdev.mindflow.core.database.dao.UserDao
 import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.DefaultRetryController
 import com.fabianospdev.mindflow.core.helpers.RetryController
+import com.fabianospdev.mindflow.features.login.data.datasources.local.LoginLocalDataSource
+import com.fabianospdev.mindflow.features.login.data.datasources.local.LoginLocalDataSourceImpl
+import com.fabianospdev.mindflow.features.login.data.repositories.LoginLocalRepositoryImpl
+import com.fabianospdev.mindflow.features.login.domain.repositories.LoginLocalRepository
+import com.fabianospdev.mindflow.features.login.domain.usecases.LoginLocalUsecase
+import com.fabianospdev.mindflow.features.login.domain.usecases.LoginLocalUsecaseImpl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -62,5 +70,25 @@ object CoreModule {
     @Singleton
     fun provideFireStore(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
+    }
+
+    @Provides
+    fun provideUserDao(database: AppDatabase): UserDao {
+        return database.userDao()
+    }
+
+    @Provides
+    fun provideLoginLocalDataSource(userDao: UserDao): LoginLocalDataSource {
+        return LoginLocalDataSourceImpl(userDao)
+    }
+
+    @Provides
+    fun provideLoginLocalRepository(repository: UserDao): LoginLocalRepository {
+        return LoginLocalRepositoryImpl(repository)
+    }
+
+    @Provides
+    fun provideUserUseCase(repository: LoginLocalRepository): LoginLocalUsecase {
+        return LoginLocalUsecaseImpl(repository)
     }
 }

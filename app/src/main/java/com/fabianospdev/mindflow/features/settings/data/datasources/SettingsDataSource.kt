@@ -6,5 +6,6 @@ import com.fabianospdev.mindflow.features.settings.data.models.firebase.globalSe
 
 interface SettingsDataSource {
     suspend fun getSettings(): GlobalSettingsFirestoreModel
-    suspend fun setSettings(model: GlobalSettingsFirestoreModel): SettingsResponseModel
+    suspend fun setSettings(model: GlobalSettingsFirestoreModel, userId: String): SettingsResponseModel
+    suspend fun setSettingsServerAddress(model: GlobalSettingsFirestoreModel, userId: String): SettingsResponseModel
 }

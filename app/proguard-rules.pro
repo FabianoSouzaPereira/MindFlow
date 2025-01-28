@@ -23,3 +23,12 @@
 -keepclassmembers class com.fabianospdev.mindflow.features.settings.data.models.firebase.globalSettings.GlobalSettingsFirestoreModel {
     public <init>();
 }
+# Room specific rules
+-keepclassmembers class * {
+    @androidx.room.* <methods>;
+    @androidx.room.* <fields>;
+}
+
+-keep @androidx.room.Entity class *
+-keep @androidx.room.Dao class *
+-keep @androidx.room.Database class *

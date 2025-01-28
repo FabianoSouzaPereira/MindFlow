@@ -3,7 +3,7 @@ package com.fabianospdev.mindflow.features.profile.di
 import com.fabianospdev.mindflow.core.di.CoreModule
 import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.RetryController
-import com.fabianospdev.mindflow.features.profile.data.datasources.ProfileDataSource
+import com.fabianospdev.mindflow.features.profile.data.datasources.ProfileApi
 import com.fabianospdev.mindflow.features.profile.data.datasources.ProfileFirebaseDataSource
 import com.fabianospdev.mindflow.features.profile.data.datasources.ProfileRemoteDataSource
 import com.fabianospdev.mindflow.features.profile.data.repositories.ProfileRemoteRepositoryImpl
@@ -26,18 +26,17 @@ object ProfileModel {
     @Provides
     @Singleton
     fun provideProfileDataSource(
-        appConfig: AppConfig,
-        retrofitDataSource: ProfileRemoteDataSource,
-        firebaseDataSource: ProfileFirebaseDataSource
-    ): ProfileDataSource {
-        return if (appConfig.isUsingFirebase.value) firebaseDataSource else retrofitDataSource
+        retrofitDataSource: ProfileApi
+    ): ProfileApi {
+        return retrofitDataSource
     }
 
     @Provides
     fun provideProfileRepository(
-        remoteDataSource: ProfileDataSource
+        profileFirebaseDataSource: ProfileFirebaseDataSource,
+        profileRemoteDataSource: ProfileRemoteDataSource
     ): ProfileRemoteRepository {
-        return ProfileRemoteRepositoryImpl(remoteDataSource)
+        return ProfileRemoteRepositoryImpl(profileFirebaseDataSource, profileRemoteDataSource)
     }
 
     @Provides
@@ -59,8 +58,8 @@ object ProfileModel {
     @Provides
     @Singleton
     fun provideProfileRemoteDataSource(retrofit: Retrofit): ProfileRemoteDataSource {
-        val profileDataSource = retrofit.create(ProfileDataSource::class.java)
-        return ProfileRemoteDataSource(profileDataSource)
+        val profileApi = retrofit.create(ProfileApi::class.java)
+        return ProfileRemoteDataSource(profileApi)
     }
 
     @Provides

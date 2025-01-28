@@ -17,4 +17,17 @@
     <string name="the_problem_reported_was">The problem reported was:\n%1$s</string>
     <string name="something_wrong">Something wrong!!</string>
     <string name="splash">Splash</string>
+    <string name="server_uri">Server Uri</string>
+    <string name="maintenance_mode">Maintenance Mode</string>
+    <string name="firebase_mode">Firebase Mode</string>
+    <string name="enter_server_address">Enter server address</string>
+    <string name="server_port">Server Port</string>
+    <string name="_0000">0000</string>
+    <string name="server_user">Server User</string>
+    <string name="enter_server_user">Enter server user</string>
+    <string name="server_password">Server Password</string>
+    <string name="enter_server_password">Enter server password</string>
+    <string name="analytics_enabled">Analytics Enabled</string>
+    <string name="chat_enabled">Chat Enabled</string>
+    <string name="dark_mode">Dark Mode</string>
 </resources>

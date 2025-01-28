@@ -11,9 +11,9 @@ class SettingsRemoteUseCaseImpl(private val settingsRemoteRepository: SettingsRe
         return settingsRemoteRepository.getSettings()
     }
 
-    override suspend fun setSettings(model: GlobalSettingsEntity): Result<SettingsResponseEntity> {
+    override suspend fun setSettings(model: GlobalSettingsEntity, userId: String): Result<SettingsResponseEntity> {
         return try {
-            settingsRemoteRepository.setSettings(model)
+            settingsRemoteRepository.setSettings(model, userId)
         } catch (error: NetworkException) {
             Result.failure(error)
         } catch (exception: Exception) {

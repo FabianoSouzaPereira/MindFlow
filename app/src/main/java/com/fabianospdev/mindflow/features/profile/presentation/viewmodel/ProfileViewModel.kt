@@ -78,7 +78,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun setProfileContent(model: ProfileEntity) {
+    fun setProfileContent(model: ProfileEntity, userId: String) {
 
         if (!retryController.isRetryEnabled.value) {
             _showRetryLimitReached.value = true
@@ -88,7 +88,7 @@ class ProfileViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val result = useCase.setProfileContent(model = model)
+                val result = useCase.setProfileContent(model = model, userId = userId)
                 if (result.isSuccess) {
                     _state.value = ProfileState.ProfileSuccess(profileResponse = result.getOrThrow())
                     retryController.resetRetryCount()

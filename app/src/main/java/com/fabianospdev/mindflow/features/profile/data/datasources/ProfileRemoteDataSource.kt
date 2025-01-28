@@ -6,8 +6,8 @@ import com.fabianospdev.mindflow.features.profile.data.model.ProfileResponseEnti
 import javax.inject.Inject
 
 class ProfileRemoteDataSource @Inject constructor(
-    private val retrofitService: ProfileDataSource
-) : ProfileDataSource() {
+    private val retrofitService: ProfileApi
+) : ProfileApi {
 
     override suspend fun getProfileContent(): ProfileFirestoreModel {
         try {
@@ -18,10 +18,10 @@ class ProfileRemoteDataSource @Inject constructor(
         }
     }
 
-    override suspend fun setProfileContent(model: ProfileRelationalModel): ProfileResponseEntity {
+    override suspend fun setProfileContent(model: ProfileRelationalModel, userId: String): ProfileResponseEntity {
         try {
 
-            return retrofitService.setProfileContent(model = model)
+            return retrofitService.setProfileContent(model = model, userId)
         } catch (e: Exception) {
             throw Throwable("Authentication error: ${e.message}", e)
         }
