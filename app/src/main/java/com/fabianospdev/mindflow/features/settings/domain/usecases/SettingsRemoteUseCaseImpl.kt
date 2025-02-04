@@ -20,4 +20,8 @@ class SettingsRemoteUseCaseImpl(private val settingsRemoteRepository: SettingsRe
             Result.failure(exception)
         }
     }
+
+    override suspend fun setDarkMode(enabled: Boolean) {
+        settingsRemoteRepository.getSettings()
+    }
 }

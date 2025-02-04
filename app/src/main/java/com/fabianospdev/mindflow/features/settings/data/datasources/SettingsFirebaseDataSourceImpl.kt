@@ -1,6 +1,5 @@
 package com.fabianospdev.mindflow.features.settings.data.datasources
 
-import android.util.Log
 import com.fabianospdev.mindflow.features.settings.data.models.SettingsResponseModel
 import com.fabianospdev.mindflow.features.settings.data.models.firebase.globalSettings.GlobalSettingsFirestoreModel
 import com.google.firebase.firestore.FirebaseFirestore
@@ -26,7 +25,6 @@ class SettingsFirebaseDataSourceImpl @Inject constructor(
 
 
             if (documentSnapshot.exists()) {
-                Log.d("Firestore", "Configuração encontrada para o usuário: $userId")
 
                 documentSnapshot.toObject(GlobalSettingsFirestoreModel::class.java)
                     ?: throw IllegalStateException("Erro ao converter para GlobalSettingsFirestoreModel")
@@ -34,7 +32,6 @@ class SettingsFirebaseDataSourceImpl @Inject constructor(
                 throw NoSuchElementException("Configuração não encontrada para o usuário: $userId")
             }
         } catch (e: Exception) {
-            Log.e("Firestore", "Erro ao buscar configurações: ${e.message}", e)
             throw e
         }
     }

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fabianospdev.mindflow.MainViewModel
 import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.RetryController
 import com.fabianospdev.mindflow.core.helpers.exceptions.CommonError
@@ -19,13 +20,20 @@ import com.fabianospdev.mindflow.features.settings.presentation.ui.settings.Sett
 import com.fabianospdev.mindflow.features.settings.presentation.ui.settings.states.SettingsState
 import com.fabianospdev.mindflow.shared.utils.Shared
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
+    private val mainViewModel: MainViewModel,
     private val useCase: SettingsRemoteUseCase,
     private val retryController: RetryController,
     private val appConfig: AppConfig
@@ -33,6 +41,9 @@ class SettingsViewModel @Inject constructor(
 
     private val _state = MutableLiveData<SettingsState>(SettingsState.SettingsLoading)
     val state: LiveData<SettingsState> get() = _state
+
+    private val _recreateActivity = MutableSharedFlow<Unit>()
+    val recreateActivity: SharedFlow<Unit> = _recreateActivity.asSharedFlow()
 
     private val _showRetryLimitReached = MutableStateFlow(false)
     val showRetryLimitReached: StateFlow<Boolean> get() = _showRetryLimitReached
@@ -72,86 +83,70 @@ class SettingsViewModel @Inject constructor(
     val darkMode: StateFlow<Boolean> get() = _darkMode
 
     private val _globalSettings = MutableStateFlow<GlobalSettingsEntity?>(null)
-    val globalSettings: StateFlow<GlobalSettingsEntity?> = _globalSettings
+    val globalSettings: StateFlow<GlobalSettingsEntity?> = _globalSettings.asStateFlow()
 
     fun getSettings() {
         if (!retryController.isRetryEnabled.value) {
             _showRetryLimitReached.value = true
             return
         }
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val result = useCase.getSettings()
                 if (result.isSuccess) {
-                    result.getOrNull()?.let { entity ->
+                    val entity = result.getOrNull()
+                    withContext(Dispatchers.Main) {
                         _globalSettings.value = entity
                         _state.value = SettingsState.SettingsSuccess(entity = entity)
                         retryController.resetRetryCount()
-                    } ?: run {
-                        _state.value = SettingsState.SettingsError("Response null")
                     }
                 } else {
-                    retryController.incrementRetryCount()
-                    _state.value = SettingsState.SettingsError(SettingsError.DataLoadFailed.message)
+                    withContext(Dispatchers.Main) {
+                        retryController.incrementRetryCount()
+                        _state.value = SettingsState.SettingsError(SettingsError.DataLoadFailed.message)
+                    }
                 }
-
             } catch (e: Exception) {
-                retryController.incrementRetryCount()
-                _state.value = when (e) {
-                    is UserNotFoundException -> SettingsState.SettingsError(
-                        SettingsError.DataLoadFailed.message
-                    )
-
-                    is TimeoutException -> SettingsState.SettingsTimeoutError(
-                        CommonError.TimeoutError.message
-                    )
-
-                    is UnauthorizedException -> SettingsState.SettingsUnauthorized(
-                        CommonError.Unauthorized.message
-                    )
-
-                    is ValidationException -> SettingsState.SettingsValidationError(
-                        CommonError.ValidationError.message
-                    )
-
-                    else -> SettingsState.SettingsError(SettingsError.SectionNotAvailable.message)
+                withContext(Dispatchers.Main) {
+                    _state.value = when (e) {
+                        is UserNotFoundException -> SettingsState.SettingsError(SettingsError.DataLoadFailed.message)
+                        is TimeoutException -> SettingsState.SettingsTimeoutError(CommonError.TimeoutError.message)
+                        is UnauthorizedException -> SettingsState.SettingsUnauthorized(CommonError.Unauthorized.message)
+                        is ValidationException -> SettingsState.SettingsValidationError(CommonError.ValidationError.message)
+                        else -> SettingsState.SettingsError(SettingsError.SectionNotAvailable.message)
+                    }
                 }
             }
         }
     }
 
     private fun setSettings(content: GlobalSettingsEntity, userId: String) {
-
         if (!retryController.isRetryEnabled.value) {
             _showRetryLimitReached.value = true
             return
         }
-        viewModelScope.launch {
+
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val result = useCase.setSettings(model = content, userId = userId)
-                if (result.isSuccess) {
-                    _state.value = SettingsState.SettingsSuccess(response = result.getOrNull())
-                    retryController.resetRetryCount()
-                } else {
-                    retryController.incrementRetryCount()
-                    _state.value = SettingsState.SettingsError("Failed to save settings.")
+                withContext(Dispatchers.Main) {
+                    if (result.isSuccess) {
+                        _state.value = SettingsState.SettingsSuccess(response = result.getOrNull())
+                        retryController.resetRetryCount()
+                    } else {
+                        retryController.incrementRetryCount()
+                        _state.value = SettingsState.SettingsError("Failed to save settings.")
+                    }
                 }
             } catch (e: Exception) {
-                retryController.incrementRetryCount()
-                _state.value = when (e) {
-                    is TimeoutException -> SettingsState.SettingsTimeoutError(
-                        CommonError.TimeoutError.message
-                    )
-
-                    is UnauthorizedException -> SettingsState.SettingsUnauthorized(
-                        CommonError.Unauthorized.message
-                    )
-
-                    is ValidationException -> SettingsState.SettingsValidationError(
-                        CommonError.ValidationError.message
-                    )
-
-                    else -> SettingsState.SettingsError("Erro inesperado ao salvar as configurações.")
+                withContext(Dispatchers.Main) {
+                    retryController.incrementRetryCount()
+                    _state.value = when (e) {
+                        is TimeoutException -> SettingsState.SettingsTimeoutError(CommonError.TimeoutError.message)
+                        is UnauthorizedException -> SettingsState.SettingsUnauthorized(CommonError.Unauthorized.message)
+                        is ValidationException -> SettingsState.SettingsValidationError(CommonError.ValidationError.message)
+                        else -> SettingsState.SettingsError("Unexpected error when saving settings.")
+                    }
                 }
             }
         }
@@ -195,6 +190,9 @@ class SettingsViewModel @Inject constructor(
     fun setDarkMode(enabled: Boolean) {
         _globalSettings.value = _globalSettings.value?.copy(darkMode = enabled)
         updateSettings()
+
+        _darkMode.value = enabled
+        mainViewModel.requestRecreate()
     }
 
     fun resetRetryLimitNotification() {

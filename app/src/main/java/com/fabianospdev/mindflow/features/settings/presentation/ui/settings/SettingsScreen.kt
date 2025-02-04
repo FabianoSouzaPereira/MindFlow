@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -90,16 +91,20 @@ fun SettingsScreen(
                 is SettingsState.SettingsIdle -> {}
 
                 is SettingsState.SettingsSuccess -> {
-                    ShowSettingsSuccess(
-                        globalSettings = globalSettings,
-                        paddingValues = PaddingValues(16.dp),
-                        onGetSettings = { viewModel.getSettings() },
-                        onToggleMaintenanceMode = { viewModel.setMaintenanceMode(it) },
-                        onToggleFirebaseMode = { viewModel.toggleFirebaseUsage(it) },
-                        onToggleAnalyticsEnabled = { viewModel.setAnalyticsEnabled(it) },
-                        onToggleChatEnabled = { viewModel.setChatEnabled(it) },
-                        onToggleDarkMode = { viewModel.setDarkMode(it) }
-                    )
+                    if (globalSettings != null) {
+                        ShowSettingsSuccess(
+                            globalSettings = globalSettings,
+                            paddingValues = PaddingValues(16.dp),
+                            onGetSettings = { viewModel.getSettings() },
+                            onToggleMaintenanceMode = { viewModel.setMaintenanceMode(it) },
+                            onToggleFirebaseMode = { viewModel.toggleFirebaseUsage(it) },
+                            onToggleAnalyticsEnabled = { viewModel.setAnalyticsEnabled(it) },
+                            onToggleChatEnabled = { viewModel.setChatEnabled(it) },
+                            onToggleDarkMode = { viewModel.setDarkMode(it) }
+                        )
+                    } else {
+                        Text("Data not found.")
+                    }
                 }
 
                 is SettingsState.SettingsError -> {

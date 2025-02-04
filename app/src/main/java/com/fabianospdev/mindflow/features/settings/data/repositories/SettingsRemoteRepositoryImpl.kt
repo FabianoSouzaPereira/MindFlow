@@ -49,4 +49,8 @@ class SettingsRemoteRepositoryImpl @Inject constructor(
             Result.failure(e)
         }
     }
+
+    override suspend fun setDarkMode(enabled: Boolean) {
+        TODO("Not yet implemented")
+    }
 }

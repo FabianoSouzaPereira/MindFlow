@@ -13,6 +13,7 @@ hiltCommon = "1.2.0"
 hilt = "2.53"
 hilt-compiler = "1.2.0"
 hilt-navigation-compose = "1.2.0"
+retrofit = "2.9.0"
 retrofitversion = "2.11.0"
 roomKtx = "2.6.1"
 runtimeLivedata = "1.7.6"
@@ -22,6 +23,8 @@ constraintlayout = "2.2.0"
 kotlinxSerializationJson = "1.8.0"
 kotlinxDatetime = "0.6.1"
 playServicesGcm = "17.0.0"
+datastorePreferences = "1.1.2"
+jetbrainsKotlinJvm = "2.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -67,11 +70,14 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 play-services-gcm = { group = "com.google.android.gms", name = "play-services-gcm", version.ref = "playServicesGcm" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
+retrofit-v290 = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" } # Adicionado
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" } # Adicionado
 

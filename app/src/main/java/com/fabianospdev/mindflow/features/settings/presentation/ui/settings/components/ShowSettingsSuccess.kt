@@ -50,7 +50,6 @@ internal fun ShowSettingsSuccess(
     onToggleChatEnabled: (Boolean) -> Unit,
     onToggleDarkMode: (Boolean) -> Unit
 ) {
-
     val focusRequester1 = remember { FocusRequester() }
     val focusRequester2 = remember { FocusRequester() }
     val focusRequester3 = remember { FocusRequester() }
@@ -60,10 +59,7 @@ internal fun ShowSettingsSuccess(
     var serverPort by remember { mutableStateOf(globalSettings!!.serverAddress.serverPort.toString()) }
     var serverUser by remember { mutableStateOf(globalSettings!!.serverAddress.serverUser) }
     var serverPassword by remember { mutableStateOf(globalSettings!!.serverAddress.serverPassword) }
-
-
-
-
+    
     LaunchedEffect(Unit) {
         onGetSettings()
     }

@@ -1,5 +1,6 @@
 package com.fabianospdev.mindflow.features.settings.di
 
+import com.fabianospdev.mindflow.MainViewModel
 import com.fabianospdev.mindflow.core.di.CoreModule
 import com.fabianospdev.mindflow.core.helpers.AppConfig
 import com.fabianospdev.mindflow.core.helpers.RetryController
@@ -61,11 +62,17 @@ object SettingsModule {
 
     @Provides
     fun providerSettingsViewModel(
+        mainViewModel: MainViewModel,
         settingsRemoteUseCase: SettingsRemoteUseCase,
         retryController: RetryController,
         appConfig: AppConfig
     ): SettingsViewModel {
-        return SettingsViewModel(useCase = settingsRemoteUseCase, retryController = retryController, appConfig = appConfig)
+        return SettingsViewModel(
+            mainViewModel = mainViewModel,
+            useCase = settingsRemoteUseCase,
+            retryController = retryController,
+            appConfig = appConfig
+        )
     }
 
     @Provides

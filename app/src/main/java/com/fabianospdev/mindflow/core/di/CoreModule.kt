@@ -36,7 +36,6 @@ object CoreModule {
     @Retention(AnnotationRetention.BINARY)
     annotation class RetrofitSource
 
-
     @Provides
     @Singleton
     fun provideRetrofit(): Retrofit {

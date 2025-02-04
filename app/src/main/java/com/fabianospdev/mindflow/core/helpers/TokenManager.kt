@@ -7,33 +7,47 @@ package com.fabianospdev.mindflow.core.helpers
 */
 
 import android.content.Context
-import android.content.SharedPreferences
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
+import android.util.Log
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.stringPreferencesKey
+import com.fabianospdev.mindflow.dataStore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 
 object TokenManager {
-    private const val TOKEN_KEY = "token"
+    private val TOKEN_KEY = stringPreferencesKey("token")
+    private const val TAG = "TokenManager"
 
-    private fun getSharedPreferences(context: Context): SharedPreferences {
-        val masterKey = MasterKey.Builder(context)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
-        return EncryptedSharedPreferences.create(
-            "secure_prefs",
-            masterKey.toString(),
-            context,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
+    private fun getTokenFlow(context: Context): Flow<String?> {
+        return context.dataStore.data
+            .catch { exception ->
+                Log.e(TAG, "Error accessing DataStore", exception)
+                emit(emptyPreferences()) // Avoids crash and returns default values
+            }
+            .map { preferences ->
+                preferences[TOKEN_KEY]
+            }
     }
 
-    fun saveToken(context: Context, token: String) {
-        val sharedPreferences = getSharedPreferences(context)
-        sharedPreferences.edit().putString(TOKEN_KEY, token).apply()
+    suspend fun saveToken(context: Context, token: String) {
+        try {
+            context.dataStore.edit { preferences ->
+                preferences[TOKEN_KEY] = token
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error saving token", e)
+        }
     }
 
-    fun getToken(context: Context): String? {
-        val sharedPreferences = getSharedPreferences(context)
-        return sharedPreferences.getString(TOKEN_KEY, null)
+    suspend fun getToken(context: Context): String? {
+        return try {
+            getTokenFlow(context).firstOrNull()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error retrieving token", e)
+            null
+        }
     }
 }

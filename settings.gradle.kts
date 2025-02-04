@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "MindFlow"
 include(":app")
+include(":integratedbillingapi")

@@ -76,6 +76,8 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.datetime)
     implementation(libs.play.services.gcm)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(project(":integratedbillingapi"))
     ksp(libs.dagger.hilt.compiler)
     ksp(libs.hilt.viewmodel.compiler)
     implementation(libs.hilt.navigation.compose)

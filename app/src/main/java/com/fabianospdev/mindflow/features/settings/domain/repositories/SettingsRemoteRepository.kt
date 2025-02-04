@@ -6,4 +6,5 @@ import com.fabianospdev.mindflow.features.settings.domain.entities.globalSetting
 interface SettingsRemoteRepository {
     suspend fun getSettings(): Result<GlobalSettingsEntity>
     suspend fun setSettings(model: GlobalSettingsEntity, userId: String): Result<SettingsResponseEntity>
+    suspend fun setDarkMode(enabled: Boolean)
 }

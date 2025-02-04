@@ -20,15 +20,16 @@ import kotlinx.coroutines.delay
 @Composable
 fun SplashScreen(navController: NavHostController) {
     val context = LocalContext.current
-    val token = TokenManager.getToken(context)
 
     Surface(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.Transparent)
     ) {
-        // Usando LaunchedEffect para manejar o delay e navegação
+        // Using LaunchedEffect to handle delay and navigation
         LaunchedEffect(Unit) {
+            val token = TokenManager.getToken(context)
+
             delay(2000)
 
             if (!token.isNullOrEmpty()) {
